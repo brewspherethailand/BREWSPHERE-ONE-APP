@@ -188,13 +188,19 @@ function saveF(id,k){const L=gl(),bad=L.find(l=>(l.t=='FG and PH'&&(l.fg||l.ph)&
  const d={id,logs:L,kegQty:$('#kq').value};if(k){if(!d.kegQty)return alert('ใส่จำนวน Kegs ที่บรรจุได้');d.status='kegged'}
  act('brew',{d,opts:L.filter(l=>l.t).map(l=>['task',l.t])},k?'ส่งไปบรรจุแล้ว ✔':undefined)}
 function sm(id){const b=S.brews.find(x=>x.id==id);
- M(`<h3>${esc(b.beer)} <small>(${esc(b.owner)})</small></h3><p>บรรจุ ${fd(b.kegDate)} • ${esc(b.kegQty)} Kegs</p><div id="smf">${f('stampType','ชนิดแสตมป์','stamp','text',b.stampType||b.taxType)}${f('stampQty','จำนวนที่ติดแสตมป์สรรพสามิต (Kegs)','','number',b.stampQty)}${f('stampDate','วันที่ติดแสตมป์','','date',b.stampDate||today())}</div>
+ M(`<h3>${esc(b.beer)} <small>(${esc(b.owner)})</small></h3><p>บรรจุ ${fd(b.kegDate)} • ${esc(b.kegQty)} Kegs</p><div id="smf" onchange="smFill(event)">${f('stampType','ชนิดแสตมป์','stamp','text',b.stampType||b.taxType)}${f('stampQty','จำนวนที่ติดแสตมป์สรรพสามิต (Kegs)','','number',b.stampQty)}${f('stampDate','วันที่ติดแสตมป์ (= วันที่ขอเจ้าหน้าที่มาติดแสตมป์)','','date',b.stampDate||today())}
+ ${f('abv','ดีกรี / แอลกอฮอล์ (%)','','number',b.abv||si(b.stampType||b.taxType,'abv'))}<p id="abvn" style="color:#aab;font-size:12px;margin:-4px 0 8px">${si(b.stampType||b.taxType,'abv')?'✔ ดึง % แอลกอฮอล์จากข้อมูลที่เคยกรอกไว้แล้ว':'กรอกครั้งแรก ระบบจะจำค่านี้ไว้ ครั้งหน้าไม่ต้องกรอกซ้ำ'}</p></div>
  <button onclick="saveS('${id}',0)">💾 บันทึก "พร้อมติดแสตมป์"</button>
  <hr style="border:0;border-top:1px solid #fff3;margin:16px 0 8px"><p style="color:#aab;font-size:13px;margin:0">เมื่อติดแสตมป์ครบแล้ว กดปุ่มด้านล่างเพื่อยืนยันและนำสินค้าเข้าคลังสินค้า</p>
  <button class="d" onclick="doneS('${id}')">✅ ติดแสตมป์เรียบร้อย → เข้าคลังสินค้า</button>`)}
-function doneS(id){const{d}=gf($('#smf'));if(!d.stampType||!d.stampQty)return alert('เลือกชนิดแสตมป์และใส่จำนวน');
+// ค่าที่เคยกรอกของชนิดแสตมป์นั้น (ล่าสุดก่อน) — ใช้เติมอัตโนมัติ ไม่ต้องกรอกซ้ำ
+const si=(t,k)=>{if(!t||!S)return'';const r=[...S.brews].reverse().find(x=>(x.stampType||x.taxType)==t&&x[k]);return r?r[k]:''};
+function smFill(e){if(!e.target||e.target.dataset.k!='stampType')return;const t=e.target.value.trim(),m=$('#smf');let hit=0;
+ ['abv'].forEach(k=>{const v=si(t,k),i=m.querySelector('[data-k='+k+']');if(v&&i){i.value=v;if(k=='abv')hit=1}});
+ $('#abvn').textContent=hit?'✔ ดึง % แอลกอฮอล์จากข้อมูลที่เคยกรอกไว้แล้ว':'กรอกครั้งแรก ระบบจะจำค่านี้ไว้ ครั้งหน้าไม่ต้องกรอกซ้ำ'}
+function doneS(id){const{d}=gf($('#smf'));if(!d.stampType||!d.stampQty)return alert('เลือกชนิดแสตมป์และใส่จำนวน');if(!d.abv)return alert('กรอกดีกรี / % แอลกอฮอล์');
  if(!confirm('ยืนยันว่าติดแสตมป์เรียบร้อยแล้ว?\n'+d.stampType+' จำนวน '+d.stampQty+' Kegs\nสินค้าจะถูกนำเข้าคลังสินค้าทันที'))return;saveS(id,1)}
-function saveS(id,k){const{d,o}=gf($('#smf'));if(!d.stampType||!d.stampQty)return alert('เลือกชนิดแสตมป์และใส่จำนวน');d.id=id;if(k)d.status='stamped';act('brew',{d,opts:o})}
+function saveS(id,k){const{d,o}=gf($('#smf'));if(!d.stampType||!d.stampQty)return alert('เลือกชนิดแสตมป์และใส่จำนวน');if(!d.abv)return alert('กรอกดีกรี / % แอลกอฮอล์');d.id=id;if(k)d.status='stamped';act('brew',{d,opts:o})}
 
 /* ===== PREPARE FOR BREW ===== */
 const CT=['ค่าวัตถุดิบการผลิต','ค่าส่ง','ค่าของที่ใช้ในโรง','Utility+แก๊ส','อื่นๆ'];
@@ -310,9 +316,69 @@ const SUMS=[['sm_m','สรุปยอดผลิตสะสมรายเ�
 const sumHtml=()=>SUMS.map(([id,t,kf])=>`<div class="ch" style="margin-top:14px"><h4 style="margin:0">${t}</h4>${xb(id)}</div><div class="sc">${tb(SH,sumR(kf),1)}</div>`).join('');
 function pieD(){const per=$('#pp').value,o={},x={},xs={};BR(['kegged','stamped']).filter(b=>pk(b).startsWith(per)).forEach(b=>{o[b.owner]=(o[b.owner]||0)+N(b.kegQty);const k=b.stampType||'ยังไม่ติดแสตมป์';x[k]=(x[k]||0)+N(b.exTax);xs[k]=(xs[k]||0)+N(b.stampQty)});return{per:per||'ทั้งหมด',o:Object.entries(o),x:Object.entries(x),xs}}
 function rList(){const ks=[...new Set(BR(['kegged','stamped']).map(pk).filter(Boolean))],per=[...new Set([...ks.map(k=>k.slice(0,4)),...ks.map(k=>k.slice(0,7))])].sort().reverse(),cur=$('#pp').value;
- $('#pl').innerHTML='<tr>'+PH.map(h=>`<th>${h}</th>`).join('')+'</tr>'+PL().map(b=>'<tr>'+PR(b).map(x=>`<td>${esc(x)}</td>`).join('')+'</tr>').join('');
+ $('#pl').innerHTML='<tr>'+PH.map(h=>`<th>${h}</th>`).join('')+'<th>เอกสารแสตมป์</th></tr>'+PL().map(b=>'<tr>'+PR(b).map(x=>`<td>${esc(x)}</td>`).join('')+`<td style="white-space:nowrap">${b.stampDate&&N(b.stampQty)>0?`<button class="d sm" onclick="sdoc('${b.stampDate}','doc')">⬇ .doc</button> <button class="s sm" onclick="sdoc('${b.stampDate}','pdf')">⬇ .pdf</button>`:''}</td></tr>`).join('');
  $('#pp').innerHTML='<option value="">ทั้งหมด</option>'+per.map(p=>`<option>${p}</option>`).join('');$('#pp').value=cur;
  $('#sumt').innerHTML=sumHtml();$('#pfb').innerHTML=tb(PFH,PFR(),1);const d=pieD();$('#pie1').innerHTML=pie(d.o);$('#pie2').innerHTML=pie(d.x)}
+
+
+/* ===== เอกสารขอติดแสตมป์ (ฟอนต์ TH Sarabun New 16) ===== */
+const CO={name:'บริษัท บริวสเฟียร์ จำกัด',reg:'01355670053681001',no:'70/658',moo:'3',soi:'-',sub:'คลองหนึ่ง',dist:'คลองหลวง',prov:'กรุงเทพมหานคร',office:'สำนักงานสรรพสามิตพื้นที่ปทุมธานี 2',boss:'สรรพสามิตพื้นที่ปทุมธานี 2',signer:'พิชญ์พล วราภรณ์นิลอุบล'};
+const THM=['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+const thp=s=>{const[y,m,d]=s.split('-');return{d:+d,m:THM[m-1],y:+y+543}};
+const SDB=()=>BR(['kegged','stamped']).filter(b=>b.stampDate&&N(b.stampQty)>0);
+function sdGroups(){const m={};SDB().forEach(b=>{(m[b.stampDate]=m[b.stampDate]||[]).push(b)});
+ return Object.keys(m).sort().reverse().map(d=>{const rows={};m[d].forEach(b=>{const t=b.stampType||b.taxType,k=[t,b.abv||'',b.kegL||20,b.stampCode||'H1'].join('|'),r=rows[k]=rows[k]||{t,abv:b.abv||'',l:b.kegL||20,c:b.stampCode||'H1',q:0};r.q+=N(b.stampQty)});
+  const L=Object.values(rows);return{d,rows:L,tot:L.reduce((a,r)=>a+r.q,0),done:m[d].every(b=>b.status=='stamped')}})}
+const SDCSS=`@page let{size:612pt 792pt;margin:0}@page rec{size:595.28pt 841.89pt;margin:0}*{box-sizing:border-box}html,body{margin:0;padding:0;background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact}body{font-family:'TH Sarabun New','THSarabunNew','Sarabun',sans-serif;color:#000}
+.pg{position:relative;overflow:hidden;page-break-after:always;break-after:page;background:#fff}.pg:last-child{page-break-after:auto;break-after:auto}.pg.L{page:let;width:612pt;height:792pt;font-size:16.1pt}.pg.R{page:rec;width:595.28pt;height:841.89pt;font-size:15.25pt}
+.a{position:absolute;white-space:pre;line-height:1;margin:0}.j{white-space:nowrap;text-align:justify;text-align-last:justify;text-justify:inter-character}.e{letter-spacing:-1.3pt}.hl{position:absolute;background:#000}.bx{position:absolute;width:13pt;height:14pt;border:1pt solid #000}.xc{text-align:center}.xr{text-align:right}`;
+const OY=-1.9;                                              // ชดเชยตำแหน่งแนวตั้งของตัวอักษร ให้ตรงกับต้นฉบับ
+const A=(x,y,t,o={})=>`<div class="a${o.j?' j':''}${o.c?' xc':''}${o.r?' xr':''}" style="left:${x}pt;top:${y+OY}pt;${o.w?'width:'+o.w+'pt;':''}${o.s?'font-size:'+o.s+'pt;':''}${o.b?'font-weight:bold;':''}">${esc(t).replace(/…/g,'<span class="e">…</span>')}</div>`;
+const LN=(x,y,w,hh)=>`<div class="hl" style="left:${x}pt;top:${y}pt;width:${w}pt;height:${hh}pt"></div>`;
+function sdHtml(g,tm){tm=tm||'in';const t=thp(g.d),dt=t.d+' '+t.m+' '+t.y,byC={};g.rows.forEach(r=>byC[r.c]=(byC[r.c]||0)+r.q);const cs=Object.entries(byC);
+ /* ---------- หน้า 1: หนังสือขอให้เจ้าหน้าที่ไปปฏิบัติงาน (Letter) ---------- */
+ const bx=(y,on)=>`<div class="bx" style="left:111pt;top:${y}pt"></div>`+(on?`<svg style="position:absolute;left:111pt;top:${y}pt" width="13" height="14"><line x1="0" y1="14" x2="13" y2="0" stroke="#000" stroke-width="1"/></svg>`:'');
+ const sline=(i,y)=>{const c=cs[i];if(i<2)return c?`<div class="a" style="left:108.6pt;top:${y+OY}pt;font-size:16.1pt">แสตมป์รหัส.............<span style="font-size:20pt">${esc(c[0])}</span>.............จำนวน...................${c[1]}…..............ดวง</div>`:A(108.6,y,'แสตมป์รหัส...............................จำนวน..........................................ดวง');
+  return A(108.6,y,'แสตมป์สี....................................จำนวน..........................................ดวง')};
+ const p1=`<div class="pg L">`+
+  A(338.1,41.5,'เขียนที่...'+CO.office+'...')+A(350.3,70.8,'วันที่  ..'+t.d+'.. เดือน ..'+t.m+'..พ.ศ..'+t.y+'...')+
+  A(72.6,129.4,'เรียน  '+CO.boss)+
+  A(108.6,158.7,'ข้าพเจ้า .....นาย'+CO.signer+'.............. ..บริษัทฯ / หรือผู้แทน ….'+CO.name+'…',{j:1,w:432})+
+  A(72.6,179.8,'มีความประสงค์ขอให้พนักงานเจ้าหน้าที่หรือเจ้าพนักงานสรรพสามิตไปปฏิบัติงานตามพระราชบัญญัติภาษี',{j:1,w:467.6})+
+  A(72.6,201.1,'สรรพสามิต พ.ศ.2560 มาตรา 13 นอกสถานที่ทำการโดยปกติ ดังนี้')+
+  bx(225,tm=='hol')+bx(243,tm=='off')+bx(263,tm=='in')+
+  A(144.6,222.5,'ในวันหยุดราชการ')+A(144.6,243.9,'นอกเวลาราชการ')+A(148.0,265.0,'ในเวลาราชการ')+
+  A(72.6,286.3,'ในวันที่............'+dt+'..........  ถึงวันที่  ....... '+dt+'..........  จำนวน  ..........1....... วัน',{j:1,w:468})+
+  A(72.6,307.7,'เพื่อไปดำเนินการ...ควบคุมการปิดแสตมป์และขีดฆ่าแสตมป์ที่………..'+CO.name+'…………...')+
+  A(108.6,329.1,'จึงเรียนมาเพื่อโปรดพิจารณาอนุญาต')+
+  A(393.8,387.6,'(ลงชื่อ)'+'.'.repeat(47))+A(410.9,416.9,'(นาย'+CO.signer+')')+
+  A(72.6,446.2,'เรียน  หัวหน้าฝ่ายบริหารการจัดเก็บภาษี')+A(108.6,475.5,'งานภาษีสุรา ได้ตรวจสอบเอกสารแล้ว ในการปิดแสตมป์สุราครั้งนี้ มีดังนี้')+
+  sline(0,498.1)+sline(1,523.5)+sline(2,544.6)+sline(3,565.9)+
+  A(244.2,587.3,'รวมทั้งสิ้น..............'+g.tot+'…..............ดวง')+`</div>`;
+ /* ---------- หน้า 2: บันทึกการควบคุมการปิดแสตมป์สุรา (A4) ---------- */
+ const n=g.rows.length,R=Math.max(7,n),H=[18,17,17,17,22,18,17].concat(Array(R-7).fill(17),[17,18,17,17]);
+ const Y=[329.5];H.forEach(x=>Y.push(Y[Y.length-1]+x));const dy=17*(R-7),X=[42.5,80.5,132,344.5,387.5,436.5,492.5,579.5];
+ let tb=LN(42.5,285.5,537.5,1);Y.forEach(y=>tb+=LN(42.5,y,537.5,1));X.forEach(x=>tb+=LN(x,285.5,1,Y[Y.length-1]-285.5+1));
+ tb+=A(89.3,292.2,'ประเภท')+A(400.3,293.1,'ขนาด')+A(447.4,292.2,'จำนวนที่')+A(46.1,302.7,'ลำดับที่')+A(98.9,313.3,'สุรา')+A(224.6,314.3,'ชื่อสุรา')+A(358.1,314.3,'ดีกรี')+A(401.3,314.3,'บรรจุ')+A(443.5,313.3,'ปิดแสตมป์')+A(507.8,314.3,'ใช้แสตมป์รหัส');
+ g.rows.forEach((r,i)=>{const y=Y[i];tb+=A(42.5,y+2,String(i+1),{c:1,w:38})+A(84.5,y+4.6,'สุราแช่ชนิดเบียร์',{s:10.6})+A(134.4,y+4,r.t)+A(344.5,y+2,N(r.abv).toFixed(2),{r:1,w:37.4})+A(387.5,y+2,N(r.l).toFixed(3),{r:1,w:40.5})+A(436.5,y+2,String(r.q),{c:1,w:56})+A(492.5,y+2,r.c,{c:1,w:87})});
+ tb+=A(134.4,Y[R]+3.7,'รวม')+A(436.5,Y[R]+1.8,String(g.tot),{c:1,w:56});
+ const p2=`<div class="pg R">`+A(238.1,65.3,'บันทึกการควบคุมการปิดแสตมป์สุรา',{b:1})+A(389.8,80.0,CO.name)+A(403.2,101.1,'วันที่   '+t.d+'  เดือน '+t.m+' พ.ศ. '+t.y)+
+  A(82.6,122.3,'กรรมการผู้มีนามข้างท้ายนี้ ได้พร้อมกันทำการควบคุมการปิดแสตมป์สุราในประเทศ ตามมาตรา 64 วรรคสอง')+
+  A(45.1,143.4,'แห่งพระราชบัญญัติภาษีสรรพสามิต พ.ศ. 2560  ของ….'+CO.name+'...............')+
+  A(45.1,164.5,'ทะเบียนสรรพสามิตเลขที่....'+CO.reg+'... ตั้งอยู่เลขที่...'+CO.no+'.... หมู่ที่ ...'+CO.moo+'.......')+
+  A(45.1,185.6,'ตรอก/ซอย....'+CO.soi+'…...........ตำบล/แขวง.....'+CO.sub+'........อำเภอ/เขต.....'+CO.dist+'.........')+
+  A(45.1,206.7,'จังหวัด..........'+CO.prov+'..................................... ได้ตรวจสอบชื่อสุรา ชนิด ขนาด ดีกรี  และ ได้ขีดฆ่า')+
+  A(45.1,227.9,'แสตมป์สุราโดยใช้เครื่องหมายเลขรหัสประทับบนดวงแสตมป์สุรา คือ .......................................................................................')+
+  A(45.1,249.0,'ตามจำนวนที่ขออนุญาตนำแสตมป์สรรพสามิตไปปิดภาชนะบรรจุสุรา และรายการสุราดังต่อไปนี้')+tb+
+  A(45.1,551.4+dy,'คณะกรรมการได้ร่วมกันตรวจสอบรายละเอียดดังกล่าวแล้วปรากฏว่าถูกต้อง จึงลงลายมือชื่อไว้เป็นหลักฐาน')+
+  A(134.4,593.6+dy,'ลงชื่อ ................................................. กรรมการ'+CO.office)+A(134.4,657.0+dy,'ลงชื่อ ................................................. กรรมการ'+CO.office)+
+  A(134.4,720.3+dy,'ลงชื่อ ................................................. เจ้าของสุราหรือผู้แทน')+A(180.5,741.5+dy,'(  '+CO.signer+' )')+`</div>`;
+ return p1+p2}
+function sdoc(d,kind){const g=sdGroups().find(x=>x.d==d);if(!g)return;const miss=g.rows.find(r=>!r.abv);if(miss&&!confirm('ชนิด "'+miss.t+'" ยังไม่มี % แอลกอฮอล์ (ดีกรี) ต้องการสร้างเอกสารต่อหรือไม่?'))return;
+ const body=sdHtml(g,'in'),title='เอกสารขอติดแสตมป์ '+d;
+ if(kind=='doc'){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['﻿<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word"><head><meta charset="utf-8"><title>'+title+'</title><style>'+SDCSS+'</style></head><body>'+body+'</body></html>'],{type:'application/msword'}));a.download='stamp-docs-'+d+'.doc';a.click();return}
+ const w=open('','_blank');if(!w)return alert('เบราว์เซอร์บล็อกหน้าต่างใหม่ กรุณาอนุญาต pop-up แล้วลองอีกครั้ง');
+ w.document.write('<meta charset="utf-8"><title>'+title+'</title><style>@font-face{font-family:"TH Sarabun New";src:local("TH Sarabun New"),local("THSarabunNew"),url("'+new URL('THSarabunNew.ttf',location.href).href+'")}'+SDCSS+'</style><body>'+body+'</body>');w.document.close();w.focus();(w.document.fonts?w.document.fonts.ready:Promise.resolve()).then(()=>setTimeout(()=>w.print(),300))}
 
 /* ===== ข้อมูลสำหรับ Export ของแต่ละตาราง/กราฟ ===== */
 EXP.pl=()=>({t:'รายการที่ผลิตทั้งหมด',h:PH,r:PL().map(PR)});
