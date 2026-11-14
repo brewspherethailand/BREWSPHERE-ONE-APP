@@ -72,7 +72,7 @@ nav::-webkit-scrollbar{height:7px}nav::-webkit-scrollbar-track{background:#333;b
  .ol{grid-template-columns:1fr 1fr}.ol .w,.ol>label:last-child{grid-column:1/-1}
  button{min-height:40px}
 }
-</style></head><body>
+input[list]{background-image:linear-gradient(45deg,transparent 50%,#aab 50%),linear-gradient(135deg,#aab 50%,transparent 50%);background-position:calc(100% - 18px) 55%,calc(100% - 12px) 55%;background-size:6px 6px;background-repeat:no-repeat;padding-right:32px}</style></head><body>
 <div id="login"><div id="lbox"><img class="lg" src="logo.png" alt="Brewsphere">
 <label>Username<input id="u" autocomplete="username"></label><label>Password<input id="p" type="password" autocomplete="current-password" onkeydown="if(event.key=='Enter')login()"></label>
 <div id="le"></div><button id="lb" onclick="login()">เข้าสู่ระบบ</button></div></div>
@@ -82,7 +82,7 @@ nav::-webkit-scrollbar{height:7px}nav::-webkit-scrollbar-track{background:#333;b
 <section id="p-list">
 <div class="card"><div class="ch" data-x="pl" data-t="รายการที่ผลิตทั้งหมด"></div><div class="sc"><table id="pl"></table></div></div>
 <div class="card"><h3>สรุปยอดผลิต</h3><div id="sumt"></div></div>
-<div class="card"><h3>สัดส่วน</h3><label>ช่วงเวลา (ปี / เดือน)<select id="pp" onchange="rList()"></select></label><div class="two" style="margin-top:12px"><div><div class="ch" data-x="pie1" data-t="Owner (จำนวน Kegs)"></div><div id="pie1"></div></div><div><div class="ch" data-x="pie2" data-t="ชนิดแสตมป์ (ค่าภาษี ฿)"></div><div id="pie2"></div></div></div></div>
+<div class="card"><h3>สัดส่วน</h3><label>ช่วงเวลา (ปี / เดือน)<select id="pp" onchange="rList()"></select></label><div class="two" style="margin-top:12px"><div><div class="ch" data-x="pie1" data-t="Owner (จำนวน Kegs)"></div><div id="pie1"></div></div><div><div class="ch" data-x="pie2" data-t="ชนิดแสตมป์ (ค่าภาษี ฿)"></div><div id="pie2"></div></div><div><div class="ch" data-x="pie3" data-t="ชนิดแสตมป์ (จำนวนถัง Keg)"></div><div id="pie3"></div></div></div></div>
 <div class="card"><div class="ch" data-x="pfb" data-t="ข้อมูล Prepare for Brew ทั้งหมด"></div><div class="sc" id="pfb"></div></div></section>
 
 <section id="p-fer">
@@ -91,10 +91,9 @@ nav::-webkit-scrollbar{height:7px}nav::-webkit-scrollbar-track{background:#333;b
 <div id="tanks"></div>
 <div class="bar"><b>📦 บรรจุแล้ว</b><div id="kbar" class="row"></div></div></section>
 
-<section id="p-prep"><div class="two"><div class="card" id="bf"><h3>Prepare for Brew</h3>
+<section id="p-prep"><div><h3>📋 บันทึกข้อมูลเบียร์แล้ว รอทำราคา</h3><div id="prl" class="card row" style="flex-wrap:wrap"></div></div><div class="card" id="bf" style="margin-top:14px"><h3>Prepare for Brew</h3>
 <div class="r2"><label>ชื่อเบียร์ *<input data-k="beer" list="dl-beer" data-o="beer"></label><label>Owner *<input data-k="owner" list="dl-owner" data-o="owner"></label></div><div id="secs"></div>
-<button class="d" onclick="saveP()">💾 บันทึก</button></div>
-<div><h3>เบียร์ที่บันทึกแล้ว (คลิกเพื่อใส่ราคา)</h3><div id="prl" class="card row" style="flex-wrap:wrap"></div></div></div></section>
+<button class="d" onclick="saveP()">💾 บันทึก</button></div></section>
 
 <section id="p-wh"><div class="two"><div class="card"><div class="ch" data-x="st" data-t="คลังสินค้า"></div><div class="sc"><table id="st"></table></div></div>
 <div><div class="card"><h3 id="oh">บันทึกออเดอร์</h3><label>ชื่อร้านค้า<input id="oshop" list="dl-shop"></label><div id="ols"></div><button class="s" onclick="addL()">＋ เพิ่มชนิดเบียร์</button>
@@ -215,16 +214,50 @@ function resetP(){$('#bf [data-k=beer]').value=$('#bf [data-k=owner]').value='';
 async function saveP(){const{d,o}=gf($('#bf'));if(!d.beer||!d.owner)return alert('ต้องใส่ชื่อเบียร์และ Owner');const it={};let tot=0;
  document.querySelectorAll('#bf .ir').forEach(r=>{const g=c=>(r.querySelector('.'+c)?.value||'').trim();if(!g('n')&&!g('p')&&!g('q'))return;const x={n:g('n'),q:g('q'),p:g('p'),dv:g('dv'),dt:g('dt')};(it[r.dataset.c]=it[r.dataset.c]||[]).push(x);tot+=net(x);if(x.n)o.push([r.dataset.c,x.n])});
  d.items=it;d.matTotal=Math.round(tot*100)/100;d.status='prep';if(await act('brew',{d,opts:o}))resetP()}
-function rPrep(){$('#prl').innerHTML=BR(['prep']).map(b=>chip(b,`pm('${b.id}')`,'',`วัตถุดิบ ฿${B(b.matTotal)}`)).join('')||'<i style="color:#99a">ยังไม่มีรายการ</i>'}
+function rPrep(){$('#prl').innerHTML=BR(['prep']).map(b=>chip(b,`pm('${b.id}')`,'',`วัตถุดิบ ฿${B(b.matTotal)} • รอทำราคา`)).join('')||'<i style="color:#99a">ยังไม่มีรายการรอทำราคา</i>'}
 function pm(id){const b=S.brews.find(x=>x.id==id),it=J(b.items,'{}'),mk=b.markup||'0';
  const ls=SECS.map(s=>(it[s[0]]||[]).map(x=>`<tr><td>${s[1]}: ${esc(x.n)}</td><td>${esc(x.q)} Kgs</td><td>${N(x.dv)?'ลด '+esc(x.dv)+esc(x.dt):''}</td><td>฿${B(net(x))}</td></tr>`).join('')).join('');
  M(`<h3>${esc(b.beer)} <small>(${esc(b.owner)})</small></h3><table>${ls}<tr><th colspan="3">ราคาวัตถุดิบรวม (หลังหักส่วนลด)</th><th>฿${B(b.matTotal)}</th></tr></table>
- <div id="pm" oninput="tt('${id}')"><h4>บวกราคาเพิ่ม (เฉพาะค่าวัตถุดิบ)</h4><div class="mk">${[0,5,10,15,20].map(m=>`<label class="ck"><input type="radio" name="mk" value="${m}" ${m==mk?'checked':''}> ${m}%</label>`).join('')}</div>
+ ${su()?'':'<p style="color:#f5a;font-size:13px">🔒 ทำราคาได้เฉพาะผู้ใช้ระดับ Super (ดูข้อมูลได้อย่างเดียว)</p>'}<div id="pm" oninput="tt('${id}')" onchange="tt('${id}')"><h4>บวกราคาเพิ่ม (เฉพาะค่าวัตถุดิบ)</h4><div class="mk">${[0,5,10,15,20].map(m=>`<label class="ck"><input type="radio" name="mk" value="${m}" ${m==mk?'checked':''}> ${m}%</label>`).join('')}</div>
  <div class="r4">${f('oem','OEM Cost','','number',b.oem)}${f('pkg','Packaging','','number',b.pkg)}${f('deliv','Delivery Fee','','number',b.deliv)}</div>
- <div class="r2">${f('exTax','ค่าภาษีสรรพสามิต (฿)','','number',b.exTax)}${f('taxType','ชนิดแสตมป์','stamp','text',b.taxType)}</div></div>
- <h3 id="tot" style="color:var(--a)"></h3><button class="s" onclick="savePM('${id}',0)">💾 บันทึก</button><button class="d" onclick="savePM('${id}',1)">ยืนยันและส่งไปเพื่อรอคิว</button>${su()?`<button class="rd" onclick="delIt('b','${id}')">🗑 ลบ</button>`:''}`);tt(id)}
-function tt(id){const b=S.brews.find(x=>x.id==id),g=k=>N($('#pm [data-k='+k+']').value),m=N(document.querySelector('#pm [name=mk]:checked')?.value),t=Math.round((N(b.matTotal)*(1+m/100)+g('oem')+g('pkg')+g('deliv')+g('exTax'))*100)/100;$('#tot').textContent='ราคารวมสุทธิ ฿'+B(t);return{t,m}}
-function savePM(id,send){const{t,m}=tt(id),{d,o}=gf($('#pm'));d.id=id;d.markup=m;d.total=t;if(send)d.status='wait';act('brew',{d,opts:o},send?'ส่งไปรอยืนยันวันต้มแล้ว ✔':undefined)}
+ <div class="r2">${f('exTax','ค่าภาษีสรรพสามิต (฿)','','number',b.exTax)}${f('taxType','ชนิดแสตมป์ (เลือก หรือพิมพ์เพิ่มใหม่)','stamp','text',b.taxType)}</div>
+ <label class="ck" style="margin-top:6px"><input type="checkbox" name="vat" ${b.vat=='1'?'checked':''}> <b>รวม VAT 7%</b> ของราคารวมทั้งหมด</label></div>
+ <h3 id="tot" style="color:var(--a)"></h3><p id="totv" style="margin:0 0 8px"></p>
+ ${su()?`<button class="s" onclick="savePM('${id}',0)">💾 บันทึก</button><button class="d" onclick="savePM('${id}',1)">ยืนยันและส่งไปเพื่อรอคิว</button><button class="rd" onclick="delIt('b','${id}')">🗑 ลบ</button>`:''}
+ <div style="margin-top:10px"><button class="s" onclick="slip('${id}','jpg')">🖼 บันทึกรูป JPG (ส่งลูกค้า)</button> <button class="s" onclick="slip('${id}','pdf')">📄 ดาวน์โหลด PDF</button></div>`);
+ if(!su())document.querySelectorAll('#pm input').forEach(i=>i.disabled=true);tt(id)}
+function tt(id){const b=S.brews.find(x=>x.id==id),g=k=>N($('#pm [data-k='+k+']').value),m=N(document.querySelector('#pm [name=mk]:checked')?.value),mat=Math.round(N(b.matTotal)*(1+m/100)*100)/100,t=Math.round((mat+g('oem')+g('pkg')+g('deliv')+g('exTax'))*100)/100,vt=!!document.querySelector('#pm [name=vat]:checked'),v=vt?Math.round(t*7)/100:0;
+ $('#tot').textContent='ราคารวมสุทธิ ฿'+B(t);$('#totv').innerHTML=vt?`VAT 7% ฿${B(v)} &nbsp;→&nbsp; <b style="color:var(--a)">ราคารวม VAT ฿${B(t+v)}</b>`:'';return{t,m,mat,vt,v,oem:g('oem'),pkg:g('pkg'),deliv:g('deliv'),ex:g('exTax')}}
+function savePM(id,send){if(!su())return alert('ทำราคาได้เฉพาะผู้ใช้ระดับ Super');const{t,m,vt}=tt(id),{d,o}=gf($('#pm'));d.id=id;d.markup=m;d.total=t;d.vat=vt?'1':'0';if(send)d.status='wait';act('brew',{d,opts:o},send?'ส่งไปรอยืนยันวันต้มแล้ว ✔':undefined)}
+
+/* ===== สลิปสรุปราคาสำหรับส่งลูกค้า (JPG / PDF) ===== */
+const loadImg=u=>new Promise(r=>{const i=new Image();i.onload=()=>r(i);i.onerror=()=>r(null);i.src=u});
+let _ft=0;const fontOK=async()=>{if(_ft)return;_ft=1;try{const f=new FontFace('TH Sarabun New','url(THSarabunNew.ttf)');await f.load();document.fonts.add(f)}catch(_){}};
+async function slipCanvas(id){await fontOK();const b=S.brews.find(x=>x.id==id),q=tt(id),L=[['ราคาวัตถุดิบ (Malt / Hops / Yeast)',q.mat]];
+ [['OEM Cost',q.oem],['Packaging',q.pkg],['Delivery Fee',q.deliv],['ภาษีสรรพสามิต',q.ex]].forEach(x=>{if(x[1]>0)L.push(x)});
+ const W=420,sc=2,pad=28,logo=await loadImg('logo.png'),LW=logo?Math.min(120,logo.width):0,LH=logo?LW*logo.height/logo.width:44,H=Math.ceil(310+LH+L.length*30+(q.vt?64:0)),c=document.createElement('canvas');c.width=(W+40)*sc;c.height=(H+40)*sc;const x=c.getContext('2d');x.scale(sc,sc);
+ x.fillStyle='#eceff3';x.fillRect(0,0,W+40,H+40);x.save();x.translate(20,20);
+ x.fillStyle='#fff';x.beginPath();x.moveTo(0,6);for(let i=0;i<=W;i+=12){x.lineTo(i+6,0);x.lineTo(i+12,6)}x.lineTo(W,H-6);for(let i=W;i>=0;i-=12){x.lineTo(i-6,H);x.lineTo(i-12,H-6)}x.closePath();x.shadowColor='rgba(0,0,0,.18)';x.shadowBlur=10;x.fill();x.shadowBlur=0;
+ const F=(s,w)=>x.font=(w?'bold ':'')+s+'px "TH Sarabun New","Sarabun",sans-serif',T=(t,px,py,al,col)=>{x.textAlign=al||'left';x.fillStyle=col||'#111';x.fillText(t,px,py)},DL=y=>{x.strokeStyle='#999';x.setLineDash([4,4]);x.beginPath();x.moveTo(pad,y);x.lineTo(W-pad,y);x.stroke();x.setLineDash([])};
+ let y=24;if(logo){x.drawImage(logo,(W-LW)/2,y,LW,LH);y+=LH+10}else{F(30,1);T('BREWSPHERE',W/2,y+30,'center');y+=44}
+ F(18,0);T('บริษัท บริวสเฟียร์ จำกัด',W/2,y+16,'center','#555');y+=30;F(24,1);T('สรุปราคาผลิต',W/2,y+20,'center');y+=34;DL(y);y+=26;
+ F(20,0);T('แบรนด์',pad,y,'left','#666');F(22,1);T(b.owner,W-pad,y,'right');y+=30;F(20,0);T('ชื่อเบียร์',pad,y,'left','#666');F(22,1);T(b.beer,W-pad,y,'right');y+=14;DL(y);y+=28;
+ F(20,0);L.forEach(r=>{T(r[0],pad,y,'left');T(B(r[1]),W-pad,y,'right');y+=30});y-=6;DL(y);y+=30;
+ F(22,1);T('ราคารวมสุทธิ',pad,y,'left');T('฿'+B(q.t),W-pad,y,'right');y+=30;
+ if(q.vt){F(20,0);T('VAT 7%',pad,y,'left');T('฿'+B(q.v),W-pad,y,'right');y+=34;F(26,1);T('รวม VAT',pad,y,'left');T('฿'+B(q.t+q.v),W-pad,y,'right');y+=30}
+ y+=6;DL(y);y+=28;F(18,0);T('ขอบคุณที่ใช้บริการ',W/2,y,'center','#666');x.restore();return c}
+function dlBlob(bl,n){const a=document.createElement('a');a.href=URL.createObjectURL(bl);a.download=n;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1500)}
+function pdfOf(jpg,pw,ph,w,h){const E=new TextEncoder(),P=[],off=[];let n=0;const add=u=>{P.push(u);n+=u.length},S_=s=>add(E.encode(s)),obj=(i,s)=>{off[i]=n;S_(i+' 0 obj\n'+s+'\nendobj\n')};
+ S_('%PDF-1.4\n');obj(1,'<</Type/Catalog/Pages 2 0 R>>');obj(2,'<</Type/Pages/Kids[3 0 R]/Count 1>>');obj(3,`<</Type/Page/Parent 2 0 R/MediaBox[0 0 ${pw} ${ph}]/Contents 4 0 R/Resources<</XObject<</Im0 5 0 R>>>>>>`);
+ const cs=`q ${pw} 0 0 ${ph} 0 0 cm /Im0 Do Q`;obj(4,`<</Length ${cs.length}>>\nstream\n${cs}\nendstream`);
+ off[5]=n;S_(`5 0 obj\n<</Type/XObject/Subtype/Image/Width ${w}/Height ${h}/ColorSpace/DeviceRGB/BitsPerComponent 8/Filter/DCTDecode/Length ${jpg.length}>>\nstream\n`);add(jpg);S_('\nendstream\nendobj\n');
+ const xo=n;S_('xref\n0 6\n0000000000 65535 f \n');for(let i=1;i<=5;i++)S_(String(off[i]).padStart(10,'0')+' 00000 n \n');S_(`trailer\n<</Size 6/Root 1 0 R>>\nstartxref\n${xo}\n%%EOF`);
+ const o=new Uint8Array(n);let p=0;P.forEach(u=>{o.set(u,p);p+=u.length});return o}
+async function slip(id,kind){busy(1);try{const c=await slipCanvas(id),b=S.brews.find(x=>x.id==id),nm='price-'+(b.beer||'beer').replace(/[^\w฀-๿-]+/g,'_');
+  const bl=await new Promise(r=>c.toBlob(r,'image/jpeg',.93));
+  if(kind=='pdf'){const u8=new Uint8Array(await bl.arrayBuffer());dlBlob(new Blob([pdfOf(u8,Math.round(c.width*.375),Math.round(c.height*.375),c.width,c.height)],{type:'application/pdf'}),nm+'.pdf')}
+  else{const fl=new File([bl],nm+'.jpg',{type:'image/jpeg'});if(navigator.canShare&&navigator.canShare({files:[fl]})){try{await navigator.share({files:[fl],title:b.beer});return}catch(e){if(e&&e.name=='AbortError')return}}dlBlob(bl,nm+'.jpg')}
+ }catch(e){alert('สร้างไฟล์ไม่สำเร็จ: '+e)}finally{busy(0)}}
 
 /* ===== WAREHOUSE ===== */
 const ST=()=>BR(['stamped']),Q=(b,tp,w)=>N(b[(tp=='N'?'ns':'wh')+w]);
@@ -318,7 +351,7 @@ function pieD(){const per=$('#pp').value,o={},x={},xs={};BR(['kegged','stamped']
 function rList(){const ks=[...new Set(BR(['kegged','stamped']).map(pk).filter(Boolean))],per=[...new Set([...ks.map(k=>k.slice(0,4)),...ks.map(k=>k.slice(0,7))])].sort().reverse(),cur=$('#pp').value;
  $('#pl').innerHTML='<tr>'+PH.map(h=>`<th>${h}</th>`).join('')+'<th>เอกสารแสตมป์</th></tr>'+PL().map(b=>'<tr>'+PR(b).map(x=>`<td>${esc(x)}</td>`).join('')+`<td style="white-space:nowrap">${b.stampDate&&N(b.stampQty)>0?`<button class="d sm" onclick="sdoc('${b.stampDate}','doc')">⬇ .doc</button> <button class="s sm" onclick="sdoc('${b.stampDate}','pdf')">⬇ .pdf</button>`:''}</td></tr>`).join('');
  $('#pp').innerHTML='<option value="">ทั้งหมด</option>'+per.map(p=>`<option>${p}</option>`).join('');$('#pp').value=cur;
- $('#sumt').innerHTML=sumHtml();$('#pfb').innerHTML=tb(PFH,PFR(),1);const d=pieD();$('#pie1').innerHTML=pie(d.o);$('#pie2').innerHTML=pie(d.x)}
+ $('#sumt').innerHTML=sumHtml();$('#pfb').innerHTML=tb(PFH,PFR(),1);const d=pieD();$('#pie1').innerHTML=pie(d.o);$('#pie2').innerHTML=pie(d.x);$('#pie3').innerHTML=pie(Object.entries(d.xs))}
 
 
 /* ===== เอกสารขอติดแสตมป์ (ฟอนต์ TH Sarabun New 16) ===== */
@@ -385,6 +418,7 @@ EXP.pl=()=>({t:'รายการที่ผลิตทั้งหมด',h:
 SUMS.forEach(([id,t,kf])=>EXP[id]=()=>({t,h:SH,r:sumR(kf)}));
 EXP.pie1=()=>{const d=pieD();return{t:'สัดส่วน Owner (Kegs) — '+d.per,g:pie(d.o),h:['Owner','จำนวนที่บรรจุ (Kegs)'],r:d.o}};
 EXP.pie2=()=>{const d=pieD();return{t:'ชนิดแสตมป์ (ค่าภาษีสรรพสามิต ฿) — '+d.per,g:pie(d.x),h:['ชนิดแสตมป์','ค่าภาษีสรรพสามิต (฿)','จำนวนที่ติดแสตมป์ (Kegs)'],r:d.x.map(([k,v])=>[k,v,d.xs[k]])}};
+EXP.pie3=()=>{const d=pieD(),r=Object.entries(d.xs);return{t:'ชนิดแสตมป์ (จำนวนถัง Keg ที่ติดแสตมป์) — '+d.per,g:pie(r),h:['ชนิดแสตมป์','จำนวนที่ติดแสตมป์ (Kegs)'],r}};
 EXP.pfb=()=>({t:'ข้อมูล Prepare for Brew ทั้งหมด',h:PFH,r:PFR()});
 EXP.st=()=>({t:'คลังสินค้า',h:['เบียร์','Owner','วันที่บรรจุ','แสตมป์ BS (Kegs)','แสตมป์ UHI (Kegs)','ไม่แสตมป์ BS (Kegs)','ไม่แสตมป์ UHI (Kegs)','รวม (Kegs)'],r:ST().map(b=>[b.beer,b.owner,fdd(b.kegDate),Q(b,'S','B'),Q(b,'S','U'),Q(b,'N','B'),Q(b,'N','U'),Q(b,'S','B')+Q(b,'S','U')+Q(b,'N','B')+Q(b,'N','U')])});
 EXP.ol=()=>({t:'ออเดอร์',h:['วันที่สั่งซื้อ','ร้านค้า','รายการซื้อ','จำนวน (Kegs)','หมายเหตุ','ส่งแล้ว','ผู้ส่ง','วันที่ส่ง','ผู้บันทึก','เวลาบันทึก'],r:S.orders.flatMap(o=>J(o.items).map(i=>[fdd(o.odate||o.ts),o.shop,i.beer+(i.tp=='N'?' (ไม่แสตมป์)':'')+' • '+(i.wh=='B'?'BS':'UHI'),i.kegs,o.note,o.sent?'ส่งแล้ว':'',o.sentBy,fdd(o.sentDate),o.by,o.ts]))});
