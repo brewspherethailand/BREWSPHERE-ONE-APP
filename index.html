@@ -11,7 +11,7 @@ input[type=checkbox],input[type=radio]{width:auto;min-height:0}input[type=file]{
 label{display:flex;flex-direction:column;gap:5px;font-size:13px;font-weight:600;color:#e2e6f5;margin:12px 0 0;line-height:1.3}
 button{background:var(--a);color:#000;border:0;border-radius:8px;padding:9px 14px;font-weight:700;cursor:pointer;margin:6px 6px 0 0}
 button:disabled{opacity:.35;cursor:not-allowed}button.s{background:#445;color:#fff}button.d{background:var(--g)}button.x{background:none;color:#fff;float:right;font-size:18px}button.rd{background:var(--r);color:#fff}
-.glass,.card,.bar,.tk,.mb{background:#000a;backdrop-filter:blur(6px)}
+.glass,.card,.bar,.tk,.mb{background:#000a;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}.mb{background:#0c0f17}
 #login{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:99;transition:.7s}
 #login.hide{opacity:0;transform:scale(1.4);filter:blur(10px);pointer-events:none}
 #lbox{width:330px;padding:26px;border:1px solid #fff4;border-radius:16px;text-align:center;background:#000a;backdrop-filter:blur(8px);animation:up .8s}
@@ -71,6 +71,12 @@ nav::-webkit-scrollbar{height:7px}nav::-webkit-scrollbar-track{background:#333;b
  .lr{grid-template-columns:1fr 1fr}.ln{display:block;grid-column:1/-1;color:var(--a);font-size:12px;font-weight:700}.lr>.lv{grid-column:1/-1}
  .ol{grid-template-columns:1fr 1fr}.ol .w,.ol>label:last-child{grid-column:1/-1}
  button{min-height:40px}
+ #st,#st tbody{display:block}#st tr:first-child{display:none}
+ #st tr{display:grid;grid-template-columns:1fr 1fr;gap:8px 12px;padding:10px;border:1px solid #fff2;border-radius:12px;margin-bottom:10px;background:#ffffff08}
+ #st td{display:block;border:0;padding:0;font-size:14px}#st td[data-l]::before{content:attr(data-l);display:block;color:var(--a);font-size:11px;margin-bottom:1px}
+ #st td.c1{grid-column:1/-1;font-size:16px;font-weight:700}#st td.tr{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:6px;align-items:center}#st td.tr::before{width:100%}
+ #st td.tr select,#st td.tr input{flex:1 1 90px;width:auto!important;min-width:0}#st td.tr button{flex:0 0 auto}
+ .two{grid-template-columns:1fr!important}
 }
 input[list]{background-image:linear-gradient(45deg,transparent 50%,#aab 50%),linear-gradient(135deg,#aab 50%,transparent 50%);background-position:calc(100% - 18px) 55%,calc(100% - 12px) 55%;background-size:6px 6px;background-repeat:no-repeat;padding-right:32px}tr.sentrow td{opacity:.4;filter:grayscale(1);font-size:12px}tr.sentrow:hover td{opacity:.8}.cxb{display:inline-block;background:#e5313b;color:#fff;font-weight:700;font-size:12px;border-radius:8px;padding:2px 8px;margin-bottom:4px}.chip.cx,.tk.cx{border-color:#e5313b!important;box-shadow:0 0 0 1px #e5313b66}.chip.cx b,.tk.cx h2{color:#ff6b73;text-decoration:line-through}td.cxt{color:#ff4d4d;font-weight:700}</style></head><body>
 <div id="login"><div id="lbox"><img class="lg" src="logo.png" alt="Brewsphere">
@@ -103,6 +109,15 @@ input[list]{background-image:linear-gradient(45deg,transparent 50%,#aab 50%),lin
 <section id="p-acct"><div class="card"><label style="margin-top:0">เลือกเดือนสำหรับ Export และกราฟวงกลม (เว้นว่าง = ทั้งหมด)<input type="month" id="xm" onchange="rAcct()"></label></div><div class="card scb" id="acard"><label style="margin-top:0">เลือกบัญชี<select id="as" onchange="setA()"><option value="scb">เบิกบัญชีบริษัท SCB (ม่วง)</option><option value="kb">เบิกบัญชีนอก KBANK (เขียว)</option></select></label>
 <div id="afb"></div><button class="d" onclick="saveA()">💾 บันทึก</button></div>
 <div class="card scb"><div class="ch" data-x="scb" data-t="บัญชีบริษัท SCB"></div><div id="scl"></div></div><div class="card kb"><div class="ch" data-x="kbl" data-t="บัญชีนอก KBANK"></div><div class="sc" id="kbl"></div></div><div class="two"><div class="card"><div class="ch" data-x="pie3" data-t="ค่าใช้จ่ายภาพรวม แยกตามชนิดรายจ่าย"></div><h4 id="p3t" style="margin:6px 0"></h4><div id="pie3"></div><div id="p3a"><div class="ch" data-x="pie3a" data-t="ภาพรวมทั้งหมด (ทุกเดือน)"></div><div id="pie3a"></div></div></div><div class="card"><div class="ch" data-x="bar3" data-t="รายจ่ายรายเดือน (SCB / KBANK / รวม)"></div><div class="sc" id="bar3"></div></div></div></section>
+<section id="p-xs"><div class="card"><h3>จัดการภาษีสรรพสามิต / รายงาน ภส.07-01, ภส.07-02</h3><label style="margin-top:0">เดือนที่ต้องการออกรายงาน<input type="month" id="xsm" onchange="rXs()"></label><p class="hint">สร้างไฟล์ .xls รูปแบบเดียวกับที่ระบบสรรพสามิตให้ดาวน์โหลด (1 ไฟล์ต่อสินค้า / ต่อวัตถุดิบ) ตรวจสอบตัวเลขก่อนนำส่งทุกครั้ง</p><div id="xw"></div></div>
+<div class="card"><h3>1) จับคู่ชื่อเบียร์กับสินค้าในระบบสรรพสามิต</h3><div class="sc" id="xmap"></div></div>
+<div class="card"><h3>2) สูตรวัตถุดิบต่อการต้ม 1 ครั้ง</h3><p class="hint">ใช้คำนวณการใช้วัตถุดิบใน ภส.07-01 (นับเท่าสูตรต่อ 1 ครั้งที่ต้ม ไม่ขึ้นกับจำนวนถังที่ได้) แก้ตัวเลขแล้วบันทึกอัตโนมัติ</p><div class="sc" id="xrec"></div></div>
+<div class="card"><h3>3) บันทึกรับวัตถุดิบ (ซื้อเข้า)</h3><div class="fgrid"><label>วันที่รับ<input type="date" id="xrd"></label><label>วัตถุดิบ<select id="xrm"><option value="malt">Malt</option><option value="hop">Hops</option><option value="yeast">Yeast</option></select></label><label>จำนวน (กก.)<input type="number" id="xrq" step="0.001" inputmode="decimal"></label><label>เลขที่เอกสาร<input id="xrn"></label><label>หมายเหตุ<input id="xro"></label></div><button class="d" onclick="xsRecv()">💾 บันทึกรับวัตถุดิบ</button><div class="sc" id="xrl" style="margin-top:10px"></div></div>
+<div class="card"><h3>4) ยอดยกมา / คงเหลือ (กรอกได้ ไม่บังคับ)</h3><div class="sc" id="xbal"></div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"><button class="s" onclick="xsMain('2')">⬇ ไฟล์ยอดยกมา สินค้า (PS0702MAIN)</button><button class="s" onclick="xsMain('1')">⬇ ไฟล์ยอดยกมา วัตถุดิบ (PS0701MAIN)</button></div></div>
+<div class="card"><h3>5) สินค้าสูญเสีย (ไม่บังคับ)</h3><div class="fgrid"><label>วันที่<input type="date" id="xld"></label><label>สินค้า<select id="xlp"></select></label><label>จำนวน (ถัง)<input type="number" id="xlq" step="any" inputmode="decimal"></label><label>หมายเหตุ<input id="xln"></label></div><button class="d" onclick="xsLoss()">💾 บันทึกสูญเสีย</button><div class="sc" id="xll" style="margin-top:10px"></div></div>
+<div class="card"><h3>6) ข้อมูลผู้ซื้อ (ไม่บังคับ — ใส่ในหมายเหตุของรายการขาย)</h3><div class="sc" id="xbuy"></div></div>
+<div class="card"><h3>7) ภส.07-02 บัญชีสินค้า (รายสินค้า)</h3><div id="x2"></div></div>
+<div class="card"><h3>8) ภส.07-01 บัญชีวัตถุดิบ (มอลต์ / ฮอปส์ / ยีสต์)</h3><div id="x1"></div></div></section>
 </div>
 <div id="m"></div><div id="dl"></div><div id="toast"></div><div id="busy"><div class="sp2"></div>กำลังบันทึก... รอสักครู่</div>
 
@@ -110,7 +125,7 @@ input[list]{background-image:linear-gradient(45deg,transparent 50%,#aab 50%),lin
 const API='https://script.google.com/macros/s/AKfycbzAd5Dcb-4DWiPoMwoAgRXeQNjiSi09PpQsOMQzFXtqo2LUtT25rV3l0WivHkCRSP9K/exec';
 const TASKS=['Dry Hops','Drain Yeast','Temp (C)','FG and PH'];
 const STAMPS=['BREWSPHERE LAGER','BREWSPHERE IPA','BREWSPHERE DARK LAGER','BREWSPHERE YUZU','JUNIPER WHEAT BEER','BREWSPHERE PALE ALE','Kingpin Plis','Minho By Alone'];
-const PG=[['list','รายการที่ผลิตทั้งหมด'],['fer','ผลิต / Fermenter'],['prep','Prepare for Brew'],['wh','คลังสินค้า'],['acct','บัญชีเบิกทดรองจ่าย']];
+const PG=[['list','รายการที่ผลิตทั้งหมด'],['fer','ผลิต / Fermenter'],['prep','Prepare for Brew'],['wh','คลังสินค้า'],['acct','บัญชีเบิกทดรองจ่าย'],['xs','สรรพสามิต']];
 const SECS=[['malt','Malt'],['hop','Hops'],['yeast','Yeast'],['other','อื่นๆ']];
 const AF={scb:[['date','วันที่','','date'],['company','ชื่อบริษัท','company'],['docNo','เลขที่ใบเสร็จ/ใบกำกับภาษี'],['docDate','วันที่ในใบเสร็จ/ใบกำกับภาษี','','date'],['paid','จำนวนเงินจ่าย','','number'],['recv','จำนวนเงินรับ','','number']],
  kb:[['date','วันที่','','date'],['item','รายการเบิกจ่าย','item'],['paid','จำนวนเงินจ่าย','','number']]};
@@ -123,7 +138,7 @@ async function call(a,x){const r=await fetch(API,{method:'POST',body:JSON.string
 let LV='',LC=0;
 const known=(c,v)=>(S&&S.opts.some(o=>o.cat==c&&o.val==v))||(({task:TASKS,stamp:STAMPS,ctype:CT})[c]||[]).includes(v);
 function merge(j){const ch=j.ch||{},up=(arr,rows,front)=>Object.values(rows||{}).forEach(r=>{const i=arr.findIndex(x=>x.id==r.id);if(r.del==='1'){if(i>=0)arr.splice(i,1);return}if(i>=0)arr[i]=r;else front?arr.unshift(r):arr.push(r)});
- up(S.brews,ch.Brews);up(S.orders,ch.Orders2,1);up(S.acct,ch.Acct);(ch.opts||[]).forEach(([c,v])=>{if(!known(c,v))S.opts.push({cat:c,val:v})})}
+ up(S.brews,ch.Brews);up(S.orders,ch.Orders2,1);up(S.acct,ch.Acct);S.recv=S.recv||[];up(S.recv,ch.Recv);(ch.opts||[]).forEach(([c,v])=>{if(!known(c,v))S.opts.push({cat:c,val:v})})}
 const flush=()=>fetch(API,{method:'POST',body:JSON.stringify({a:'flush',t:T})}).catch(()=>{});
 async function act(a,x,msg){busy(1);try{
  if(x&&x.opts)x={...x,opts:x.opts.filter(o=>!known(o[0],o[1]))};
@@ -145,13 +160,13 @@ function dls(){const m={task:[...TASKS],stamp:[...STAMPS],ctype:[...CT]};S.opts.
  $('#dl').innerHTML=Object.keys(m).map(c=>`<datalist id="dl-${c}">${[...new Set(m[c])].sort((a,b)=>a.localeCompare(b)).map(v=>`<option value="${esc(v)}">`).join('')}</datalist>`).join('')}
 
 function start(){$('#app').classList.add('show');document.querySelectorAll('[data-x]').forEach(e=>e.innerHTML='<h3>'+e.dataset.t+'</h3>'+xb(e.dataset.x));$('#who').textContent=ME.name;
- const al=PG.filter(p=>ME.role!=='limited'||['fer','prep','wh'].includes(p[0]));if(!al.find(p=>p[0]==pg))pg='fer';
+ const al=PG.filter(p=>p[0]=='xs'?ME.role==='super':(ME.role!=='limited'||['fer','prep','wh'].includes(p[0])));if(!al.find(p=>p[0]==pg))pg='fer';
  $('#nav').innerHTML=al.map(p=>`<button data-p="${p[0]}" onclick="go('${p[0]}')">${p[1]}</button>`).join('');
  SECS.forEach(s=>{$('#secs').insertAdjacentHTML('beforeend',`<h4>${s[1]}</h4><div id="sec-${s[0]}"></div><button class="s" onclick="addR('${s[0]}')">＋ เพิ่ม ${s[1]}</button>`);addR(s[0])});
  addL();setA();go(pg);load(true);clearInterval(timer);timer=setInterval(()=>{if(!document.hidden)load()},15000)}
 function go(p){pg=p;PG.forEach(x=>$('#p-'+x[0]).style.display=x[0]==p?'':'none');document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.p==p));document.querySelector('nav button.on')?.scrollIntoView({inline:'center',block:'nearest'});render()}
 async function load(force){try{const full=force||!S||(++LC%8==0),j=await call('poll',{v:full?'':LV});LV=j.v||LV;if(!j.same){S=j;render()}$('#dot').classList.remove('bad')}catch(e){$('#dot').classList.add('bad')}}
-function render(){if(!S)return;dls();({list:rList,fer:rFer,prep:rPrep,wh:rWh,acct:rAcct})[pg]()}
+function render(){if(!S)return;dls();({list:rList,fer:rFer,prep:rPrep,wh:rWh,acct:rAcct,xs:rXs})[pg]()}
 const BR=st=>S.brews.filter(b=>!b.cancel&&st.includes(b.status));   // เบียร์ที่ยกเลิกไม่แสดงในช่อง/ถัง
 
 /* ===== FERMENTER ===== */
@@ -265,8 +280,8 @@ async function slip(id,kind){busy(1);try{const c=await slipCanvas(id),b=S.brews.
 /* ===== WAREHOUSE ===== */
 const ST=()=>BR(['stamped']),Q=(b,tp,w)=>N(b[(tp=='N'?'ns':'wh')+w]);
 function rWh(){const keep={};document.querySelectorAll('#st [id^=tf],#st [id^=tp]').forEach(e=>keep[e.id]=e.value);
- $('#st').innerHTML='<tr><th>เบียร์</th><th>Owner</th><th>วันที่บรรจุ</th><th>แสตมป์<br>BS</th><th>แสตมป์<br>UHI</th><th>ไม่แสตมป์<br>BS</th><th>ไม่แสตมป์<br>UHI</th><th>โยกคลัง</th></tr>'+ST().map(b=>`<tr><td>${esc(b.beer)}</td><td>${esc(b.owner)}</td><td>${fd(b.kegDate)}</td><td><b>${Q(b,'S','B')}</b></td><td><b>${Q(b,'S','U')}</b></td><td>${Q(b,'N','B')}</td><td>${Q(b,'N','U')}</td>
- <td style="white-space:nowrap"><select id="tp${b.id}" style="width:auto"><option value="S">แสตมป์</option><option value="N">ไม่แสตมป์</option></select><input id="tf${b.id}" type="number" placeholder="Kegs" style="width:70px"><button class="s" onclick="tr('${b.id}','B','U')">→UHI</button><button class="s" onclick="tr('${b.id}','U','B')">→BS</button></td></tr>`).join('')||'<tr><td colspan="8">ยังไม่มีสินค้า (เกิดเมื่อติดแสตมป์เสร็จ)</td></tr>';
+ $('#st').innerHTML='<tr><th>เบียร์</th><th>Owner</th><th>วันที่บรรจุ</th><th>แสตมป์<br>BS</th><th>แสตมป์<br>UHI</th><th>ไม่แสตมป์<br>BS</th><th>ไม่แสตมป์<br>UHI</th><th>โยกคลัง</th></tr>'+ST().map(b=>`<tr><td class="c1">${esc(b.beer)}</td><td data-l="Owner">${esc(b.owner)}</td><td data-l="วันที่บรรจุ">${fd(b.kegDate)}</td><td data-l="แสตมป์ BS"><b>${Q(b,'S','B')}</b></td><td data-l="แสตมป์ UHI"><b>${Q(b,'S','U')}</b></td><td data-l="ไม่แสตมป์ BS">${Q(b,'N','B')}</td><td data-l="ไม่แสตมป์ UHI">${Q(b,'N','U')}</td>
+ <td class="tr" data-l="โยกคลัง"><select id="tp${b.id}" style="width:auto"><option value="S">แสตมป์</option><option value="N">ไม่แสตมป์</option></select><input id="tf${b.id}" type="number" placeholder="Kegs" style="width:70px"><button class="s" onclick="tr('${b.id}','B','U')">→UHI</button><button class="s" onclick="tr('${b.id}','U','B')">→BS</button></td></tr>`).join('')||'<tr><td colspan="8">ยังไม่มีสินค้า (เกิดเมื่อติดแสตมป์เสร็จ)</td></tr>';
  Object.entries(keep).forEach(([k,x])=>{const e=document.getElementById(k);if(e)e.value=x});
  document.querySelectorAll('.ob').forEach(s=>{const x=s.value;s.innerHTML='<option value="">— เลือกเบียร์ (แสตมป์/ไม่แสตมป์) —</option>'+ST().map(b=>`<option value="${b.id}">${esc(b.beer)} (${esc(b.owner)}) — BS ${Q(b,'S','B')}/${Q(b,'N','B')} · UHI ${Q(b,'S','U')}/${Q(b,'N','U')}</option>`).join('');s.value=x});
  $('#ol').innerHTML='<tr><th>วันที่สั่งซื้อ</th><th>ร้านค้า</th><th>รายการซื้อ</th><th>จำนวน</th><th>ส่งแล้ว</th></tr>'+S.orders.map((o,i)=>[o,i]).sort((a,b)=>(!!a[0].sent-!!b[0].sent)||a[1]-b[1]).map(x=>x[0]).map(o=>{const L=J(o.items);return `<tr class="cl${o.sent&&!o.unreq?' sentrow':''}" onclick="eo('${o.id}')"><td>${fdd(o.odate||o.ts)}</td><td>${esc(o.shop)}</td><td>${L.map(i=>esc(i.beer)+(i.tp=='N'?' (ไม่แสตมป์)':'')+' • '+(i.wh=='B'?'BS':'UHI')).join('<br>')}</td><td>${L.map(i=>i.kegs).join('<br>')}</td>
@@ -439,4 +454,180 @@ EXP.pie3=()=>{const m=xm(),d=expD(m);return{t:'ค่าใช้จ่ายแ
 EXP.bar3=()=>{const d=barD();return{t:'รายจ่ายรายเดือน SCB / KBANK / รวม',g:d.ms.length?bars(d.ms,d.ser):'',h:['เดือน','SCB (฿)','KBANK (฿)','รวม 2 บัญชี (฿)'],r:d.ms.map((m,i)=>[m,d.ser[0].d[i],d.ser[1].d[i],d.ser[2].d[i]])}};
 
 if(T&&ME){$('#login').classList.add('hide');start()}
+/* ===== .xls (BIFF8 + OLE2) writer — โครงเดียวกับไฟล์ที่ระบบสรรพสามิตออกให้ ===== */
+const XLS_PRE=Uint8Array.from('0908100000060500d310cc074100000006000000e1000200b004c10002000000e20000005c0070001500004d6963726f736f6674204f666669636520557365722020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202042000200b0046101020000003d01020000009c0002000e00190002000000120002000000130002000000af0102000000bc01020000003d00120068010e015c3abe23380000000000010058024000020000008d00020000002200020000000e0002000100b70102000000da000200000031001500c8000000ff7f90010000000000000500417269616c31001500c8000000ff7f90010000000000000500417269616c31001500c8000000ff7f90010000000000000500417269616c31001500c8000000ff7f90010000000000000500417269616c1e041a000500150000222422232c2323305f293b28222422232c232330291e041f0006001a0000222422232c2323305f293b5b5265645d28222422232c232330291e04200007001b0000222422232c2323302e30305f293b28222422232c2323302e3030291e0425000800200000222422232c2323302e30305f293b5b5265645d28222422232c2323302e3030291e042c002a002700005f282a20232c2323305f293b5f282a2028232c232330293b5f282a20222d225f293b5f28405f291e04350029003000005f282224222a20232c2323305f293b5f282224222a2028232c232330293b5f282224222a20222d225f293b5f28405f291e043d002c003800005f282224222a20232c2323302e30305f293b5f282224222a2028232c2323302e3030293b5f282224222a20222d223f3f5f293b5f28405f291e0434002b002f00005f282a20232c2323302e30305f293b5f282a2028232c2323302e3030293b5f282a20222d223f3f5f293b5f28405f29e000140000000000f5ff200000000000000000000000c020e000140001000000f5ff200000f40000000000000000c020e000140001000000f5ff200000f40000000000000000c020e000140002000000f5ff200000f40000000000000000c020e000140002000000f5ff200000f40000000000000000c020e000140000000000f5ff200000f40000000000000000c020e000140000000000f5ff200000f40000000000000000c020e000140000000000f5ff200000f40000000000000000c020e000140000000000f5ff200000f40000000000000000c020e000140000000000f5ff200000f40000000000000000c020e000140000000000f5ff200000f40000000000000000c020e000140000000000f5ff200000f40000000000000000c020e000140000000000f5ff200000f40000000000000000c020e000140000000000f5ff200000f40000000000000000c020e000140000000000f5ff200000f40000000000000000c020e0001400000000000100200000000000000000000000c020e000140001002b00f5ff200000f80000000000000000c020e000140001002900f5ff200000f80000000000000000c020e000140001002c00f5ff200000f80000000000000000c020e000140001002a00f5ff200000f80000000000000000c020e000140001000900f5ff200000f80000000000000000c020e0001400000031000100200000000000080408040000c020e000140000000e000100200000000000080408040000c02093020400108003ff93020400118006ff93020400128004ff93020400138007ff93020400008000ff93020400148005ff60010200000085000e0000000000000006005368656574318c00040001000100ae01040001000104170008000100000000000000'.match(/../g),h=>parseInt(h,16));
+const XLS_PRE2=Uint8Array.from('0908100000060500d310cc074100000006000000e1000200b004c10002000000e20000005c0070000600006f7261636c652020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202042000200b0046101020000003d01020000009c0002000e00190002000000120002000000130002000000af0102000000bc01020000003d00120068010e015c3abe23380000000000010058024000020000008d00020000002200020000000e0002000100b70102000000da000200000031001500c8000000ff7f90010000000000000500417269616c31001500c8000000ff7f90010000000000000500417269616c31001500c8000000ff7f90010000000000000500417269616c31001500c8000000ff7f90010000000000000500417269616c31001500c80000000a0090010000000000000500417269616c1e041a000500150000222422232c2323305f293b28222422232c232330291e041f0006001a0000222422232c2323305f293b5b5265645d28222422232c232330291e04200007001b0000222422232c2323302e30305f293b28222422232c2323302e3030291e0425000800200000222422232c2323302e30305f293b5b5265645d28222422232c2323302e3030291e042c002a002700005f282a20232c2323305f293b5f282a2028232c232330293b5f282a20222d225f293b5f28405f291e04350029003000005f282224222a20232c2323305f293b5f282224222a2028232c232330293b5f282224222a20222d225f293b5f28405f291e043d002c003800005f282224222a20232c2323302e30305f293b5f282224222a2028232c2323302e3030293b5f282224222a20222d223f3f5f293b5f28405f291e0434002b002f00005f282a20232c2323302e30305f293b5f282a2028232c2323302e3030293b5f282a20222d223f3f5f293b5f28405f29e000140000000000f5ff200000000000000000000000c020e000140001000000f5ff200000f40000000000000000c020e000140001000000f5ff200000f40000000000000000c020e000140002000000f5ff200000f40000000000000000c020e000140002000000f5ff200000f40000000000000000c020e000140000000000f5ff200000f40000000000000000c020e000140000000000f5ff200000f40000000000000000c020e000140000000000f5ff200000f40000000000000000c020e000140000000000f5ff200000f40000000000000000c020e000140000000000f5ff200000f40000000000000000c020e000140000000000f5ff200000f40000000000000000c020e000140000000000f5ff200000f40000000000000000c020e000140000000000f5ff200000f40000000000000000c020e000140000000000f5ff200000f40000000000000000c020e000140000000000f5ff200000f40000000000000000c020e0001400000000000100200000000000000000000000c020e000140001002b00f5ff200000f80000000000000000c020e000140001002900f5ff200000f80000000000000000c020e000140001002c00f5ff200000f80000000000000000c020e000140001002a00f5ff200000f80000000000000000c020e000140001000900f5ff200000f80000000000000000c020e0001400000031000100200000000000080408040000c020e000140000000e000100200000000000080408040000c020e00014000000ffff0100230000100000080408040000c020e0001400050000000100200000080000080408040000c02093020400108003ff93020400118006ff93020400128004ff93020400138007ff93020400008000ff93020400148005ff60010200000085000e0000000000000006005368656574318c00040001000100ae01040001000104170008000100000000000000'.match(/../g),h=>parseInt(h,16));
+function xlsBuild(rows,nc,o){o=o||{};
+ const u16=n=>[n&255,n>>8&255],u32=n=>[n&255,n>>8&255,n>>16&255,n>>>24],f64=n=>[...new Uint8Array(new Float64Array([n]).buffer)];
+ const rec=(t,b)=>[...u16(t),...u16(b.length),...b];
+ // --- ตารางข้อความ ---
+ const sst=[],sx={};let tot=0;
+ rows.forEach(r=>r.forEach(c=>{if(typeof c==='string'&&c!==''){tot++;if(sx[c]===undefined){sx[c]=sst.length;sst.push(c)}}}));
+ const sb=s=>{const l=[...s].every(ch=>ch.charCodeAt(0)<256),b=[...u16(s.length),l?0:1];for(let i=0;i<s.length;i++){const c=s.charCodeAt(i);b.push(c&255);if(!l)b.push(c>>8)}return b};
+ const pre=[...(o.pre||XLS_PRE)];
+ // ตำแหน่ง BOUNDSHEET
+ let bp=0;for(let p=0;p<pre.length;){const t=pre[p]|pre[p+1]<<8,l=pre[p+2]|pre[p+3]<<8;if(t===0x85){bp=p+4;break}p+=4+l}
+ // SST (+CONTINUE ที่ขอบสตริง) และ EXTSST
+ const recs=[];let cur=[...u32(tot),...u32(sst.length)],buckets=[],gl=pre.length;
+ const closeRec=(first)=>{recs.push({t:first?0xfc:0x3c,b:cur})};
+ let first=true,start=0;
+ const rs=[];
+ sst.forEach((s,i)=>{const b=sb(s);if(cur.length+b.length>8224&&cur.length>(first?8:0)){closeRec(first);first=false;cur=[]}
+  rs.push([recs.length,cur.length]);cur=cur.concat(b)});
+ closeRec(first);
+ // ตำแหน่งสัมบูรณ์
+ const abs=[];let p=gl;recs.forEach(r=>{abs.push(p);p+=4+r.b.length});
+ const ext=[...u16(8)];for(let i=0;i<sst.length;i+=8){const[ri,off]=rs[i];ext.push(...u32(abs[ri]+4+off),...u16(4+off),0,0)}
+ let g=[];recs.forEach(r=>g.push(...rec(r.t,r.b)));if(sst.length)g.push(...rec(0xff,ext));g.push(...rec(0x0a,[]));
+ const gtot=pre.length+g.length;pre.splice(bp,4,...u32(gtot));
+ // --- Sheet ---
+ const nr=rows.length,sh=[];const A=(b)=>{for(let i=0;i<b.length;i++)sh.push(b[i])};
+ const base=gtot,P=()=>base+sh.length;
+ A(rec(0x809,[0,6,0x10,0,0xbb,0x0d,0xcc,0x07,0xc1,0,0,0,6,0,0,0]));
+ const idxPos=sh.length;A(rec(0x20b,new Array(16+4*Math.ceil(nr/32)).fill(0)));
+ [[0xd,[1,0]],[0xc,[100,0]],[0xf,[1,0]],[0x11,[0,0]],[0x10,[0xfc,0xa9,0xf1,0xd2,0x4d,0x62,0x50,0x3f]],[0x5f,[1,0]],[0x2a,[0,0]],[0x2b,[0,0]],[0x82,[1,0]],[0x80,[0,0,0,0,0,0,0,0]],[0x225,[0,0,0xff,0]],[0x81,[0xc1,4]],[0x14,[]],[0x15,[]],[0x83,[0,0]],[0x84,[0,0]],
+  [0xa1,[1,0,100,0,1,0,1,0,1,0,2,0,0x2c,1,0x2c,1,0,0,0,0,0,0,0xe0,0x3f,0,0,0,0,0,0,0xe0,0x3f,1,0]],[0x55,[8,0]]].forEach(([t,b])=>A(rec(t,b)));
+ A(rec(0x7d,[0,0,...u16(nc-1),0xe3,8,0x15,0,2,0,2,0]));
+ const lastRow=nr,dimPos=sh.length;A(rec(0x200,[...u32(0),...u32(lastRow),...u16(0),...u16(nc),0,0]));
+ // เฉพาะแถวที่มีข้อมูล
+ const live=[];rows.forEach((r,i)=>{if(r.some(c=>c!==null&&c!==undefined&&c!==''))live.push(i)});
+ const dbs=[];
+ for(let k=0;k<live.length;k+=32){
+  const blk=live.slice(k,k+32),rp=P(),cellsStart=[];
+  blk.forEach(ri=>{const r=rows[ri];let a=-1,z=0;r.forEach((c,ci)=>{if(c!==null&&c!==undefined&&c!==''){if(a<0)a=ci;z=ci+1}});A(rec(0x208,[...u16(ri),...u16(a),...u16(z),0xff,0,0,0,0,0,0,1,0x0f,0]))});
+  blk.forEach(ri=>{cellsStart.push(P());rows[ri].forEach((c,ci)=>{if(c===null||c===undefined||c==='')return;
+   const xf=o.xf?o.xf(ri,ci):ri===3?0x15:0x0f;if(typeof c==='number')A(rec(0x203,[...u16(ri),...u16(ci),xf,0,...f64(c)]));else A(rec(0xfd,[...u16(ri),...u16(ci),xf,0,...u32(sx[c])]))})});
+  const dp=P(),b=[...u32(dp-rp)];blk.forEach((ri,j)=>b.push(...u16(j?cellsStart[j]-cellsStart[j-1]:cellsStart[0]-(rp+20))));
+  dbs.push(dp);A(rec(0xd7,b));
+ }
+ // INDEX
+ const ib=[...u32(0),...u32(0),...u32(lastRow),...u32(0)];dbs.forEach(d=>ib.push(...u32(d)));const ir=rec(0x20b,ib);for(let i=0;i<ir.length;i++)sh[idxPos+i]=ir[i];
+ A(rec(0x23e,[0xb6,6,0,0,0,0,0x40,0,0,0,0,0,0,0,0,0,0,0]));A(rec(0x1d,[3,0,0,0,0,0,0,1,0,0,0,0,0,0,0]));A(rec(0x0a,[]));
+ const wb=Uint8Array.from([...pre,...g,...sh]);
+ return xlsOle(wb)}
+/* ---- กล่อง OLE2 (mini stream สำหรับไฟล์ < 4096 ไบต์ เหมือนไฟล์ต้นฉบับ) ---- */
+function xlsOle(wb){
+ const S=512,sz=wb.length,small=sz<4096,u32=(a,o,n)=>{a[o]=n&255;a[o+1]=n>>8&255;a[o+2]=n>>16&255;a[o+3]=n>>>24},ENDC=0xFFFFFFFE,FREE=0xFFFFFFFF,FATS=0xFFFFFFFD;
+ const mn=small?Math.ceil(sz/64):0,msz=mn*64,mfs=small?Math.ceil(mn/128):0,ctr=small?Math.ceil(msz/S):Math.ceil(sz/S);
+ // เลย์เอาต์เซกเตอร์: [ข้อมูล ctr][ไดเรกทอรี 1][miniFAT mfs][FAT n]
+ let nfat=1;const body=ctr+1+mfs;while(nfat*128<body+nfat)nfat++;
+ const total=body+nfat,fat=new Array(nfat*128).fill(FREE);
+ for(let i=0;i<ctr;i++)fat[i]=i<ctr-1?i+1:ENDC;
+ const dirS=ctr,mfS=ctr+1,fatS=ctr+1+mfs;fat[dirS]=ENDC;for(let i=0;i<mfs;i++)fat[mfS+i]=i<mfs-1?mfS+i+1:ENDC;for(let i=0;i<nfat;i++)fat[fatS+i]=FATS;
+ const out=new Uint8Array(S+total*S);
+ out.set([0xd0,0xcf,0x11,0xe0,0xa1,0xb1,0x1a,0xe1]);out[24]=0x3e;out[26]=3;out[28]=0xfe;out[29]=0xff;out[30]=9;out[32]=6;
+ u32(out,44,nfat);u32(out,48,dirS);u32(out,56,4096);u32(out,60,small?mfS:ENDC);u32(out,64,mfs);u32(out,68,ENDC);u32(out,72,0);
+ for(let i=0;i<109;i++)u32(out,76+i*4,i<nfat?fatS+i:FREE);
+ const sec=i=>S+i*S;
+ if(small)out.set(wb,sec(0));else out.set(wb,sec(0));
+ // miniFAT
+ if(small){const mf=new Array(mfs*128).fill(FREE);for(let i=0;i<mn;i++)mf[i]=i<mn-1?i+1:ENDC;mf.forEach((v,i)=>u32(out,sec(mfS)+i*4,v))}
+ fat.forEach((v,i)=>u32(out,sec(fatS)+i*4,v));
+ // ไดเรกทอรี
+ const ent=(i,name,type,color,l,r,c,st,size)=>{const o=sec(dirS)+i*128;for(let k=0;k<name.length;k++){out[o+k*2]=name.charCodeAt(k)}out[o+64]=name?(name.length+1)*2:0;out[o+66]=type;out[o+67]=color;u32(out,o+68,l);u32(out,o+72,r);u32(out,o+76,c);u32(out,o+116,st);u32(out,o+120,size)};
+ ent(0,'Root Entry',5,1,FREE,FREE,1,small?0:ENDC,small?msz:0);ent(1,'Workbook',2,1,FREE,FREE,FREE,small?0:0,sz);ent(2,'',0,0,FREE,FREE,FREE,0,0);ent(3,'',0,0,FREE,FREE,FREE,0,0);
+ return out}
+/* ---- ZIP (แบบไม่บีบอัด) ---- */
+const CRCT=(()=>{const t=[];for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;t[n]=c>>>0}return t})();
+const crc32=b=>{let c=0xFFFFFFFF;for(let i=0;i<b.length;i++)c=CRCT[(c^b[i])&255]^(c>>>8);return(c^0xFFFFFFFF)>>>0};
+function zipBuild(files){const e=new TextEncoder(),ch=[],cd=[];let off=0;const w16=n=>[n&255,n>>8&255],w32=n=>[n&255,n>>8&255,n>>16&255,n>>>24];
+ files.forEach(([nm,d])=>{const n=e.encode(nm),c=crc32(d),h=[...w32(0x04034b50),20,0,0,8,0,0,0,0,0x21,0,...w32(c),...w32(d.length),...w32(d.length),...w16(n.length),0,0];
+  ch.push(Uint8Array.from(h),n,d);cd.push([nm,n,c,d.length,off]);off+=h.length+n.length+d.length});
+ const cs=off;cd.forEach(([,n,c,l,o])=>{ch.push(Uint8Array.from([...w32(0x02014b50),20,0,20,0,0,8,0,0,0,0,0x21,0,...w32(c),...w32(l),...w32(l),...w16(n.length),0,0,0,0,0,0,0,0,0,0,0,0,...w32(o)]),n);off+=46+n.length});
+ ch.push(Uint8Array.from([...w32(0x06054b50),0,0,0,0,...w16(cd.length),...w16(cd.length),...w32(off-cs),...w32(cs),0,0]));return new Blob(ch,{type:'application/zip'})}
+
+
+/* ===== รายงานสรรพสามิต: ภส.07-02 (บัญชีสินค้า) / ภส.07-01 (บัญชีวัตถุดิบ) → ไฟล์ .xls รูปแบบเดียวกับที่ระบบสรรพสามิตออกให้ ===== */
+const XCO='ชื่อผู้นำเข้า บริษัท บริวสเฟียร์ จำกัด เลขทะเบียนสรรพสามิต 01355670053681001',XTX='01355670053681001';
+const XP=[['1301010000#vG3,00,000,023,97#1#0#52#2100.0000000#13.01(1)(ก)','G - BREWSPHERE DARK LAGER 4.9000 ดีกรี 20.000 ลิตร ถัง','1301010000vG3000000970235200/-'],['1301010000#vG4,00,000,023,27#1#0#52#2200.0000000#13.01(1)(ก)','G - BREWSPHERE IPA 6.4000 ดีกรี 20.000 ลิตร ถัง','1301010000vG4000000270235200/-'],['1301010000#vRc,00,000,023,01#1#0#52#2100.0000000#13.01(1)(ก)','G - BREWSPHERE YUZU 5.0000 ดีกรี 20.000 ลิตร ถัง','1301010000vRc000000010235200/-'],['1301010000#xF9,00,000,023,01#1#0#52#2100.0000000#13.01(1)(ก)','G - KINGPIN PLIS 5.0000 ดีกรี 20.000 ลิตร ถัง','1301010000xF9000000010235200/-'],['1301010000#xxY,00,000,023,01#1#0#52#2100.0000000#13.01(1)(ก)','G - LUKY DAKY 5.0000 ดีกรี 20.000 ลิตร ถัง','1301010000xxY000000010235200/-'],['1301010000#vG2,00,000,023,90#1#0#52#2300.0000000#13.01(1)(ก)','G - NEWMOON 9.5000 ดีกรี 20.000 ลิตร ถัง','1301010000vG2006Ny0900235200/-'],['1301010000#xFA,00,000,023,CG#1#0#52#2200.0000000#13.01(1)(ก)','G - RAKNAR ROGBOK 7.0000 ดีกรี 20.000 ลิตร ถัง','1301010000xFA000000CG0235200/-'],['1301010000#rf6,00,0o7,023,65#1#0#52#2300.0000000#13.01(1)(ก)','G - บริวสเฟียร์ PALE ALE 5.5000 ดีกรี 20.000 ลิตร ถัง','1301010000rf6000o70650235200/-'],['1301010000#rf6,00,6Hv,023,01#1#0#52#3200.0000000#13.01(1)(ก)','G - บริวสเฟียร์ american juniper wheat 5.0000 ดีกรี 20.000 ลิตร ถัง','1301010000rf6006Hv0010235200/-'],['1301010000#rf6,00,6Hx,023,BM#1#0#52#3200.0000000#13.01(1)(ก)','G - บริวสเฟียร์ brewsphere dunkel weissbier 5.1000 ดีกรี 20.000 ลิตร ถัง','1301010000rf6006Hx0BM0235200/-'],['1301010000#rf6,00,6Hp,023,97#1#0#52#3100.0000000#13.01(1)(ก)','G - บริวสเฟียร์ brewsphere lager 4.9000 ดีกรี 20.000 ลิตร ถัง','1301010000rf6006Hp0970235200/-'],['1301010000#rf6,00,6Ht,023,01#1#0#52#3200.0000000#13.01(1)(ก)','G - บริวสเฟียร์ brewsphere yuzu 5.0000 ดีกรี 20.000 ลิตร ถัง','1301010000rf6006Ht0010235200/-'],['1301010000#ts7,00,6Hr,023,CA#1#0#52#3000.0000000#13.01(1)(ก)','G - อโลน minho by alone 6.0000 ดีกรี 20.000 ลิตร ถัง','1301010000ts7006Hr0CA0235200/-'],['1301010000#ttI,00,6LK,023,CP#1#0#52#2500.0000000#13.01(1)(ก)','G - แฮปแลป BLACK JACK by Haplab 8.5000 ดีกรี 20.000 ลิตร ถัง','1301010000ttI006LK0CP0235200/-']];
+const XM=[['malt','R - มอล์ต  (01)','Malt'],['hop','R - ฮอปส์  (02)','Hops'],['yeast','R - ยีสต์  (03)','Yeast']];
+const xpc=c=>(XP.find(x=>x[0]==c)||[])[2]||'';   // รหัสสินค้าผู้ประกอบการ จากไฟล์ fileProduct ของสรรพสามิต
+
+const xtok=s=>new Set((s.toLowerCase().match(/[a-z]+/g)||[]).filter(w=>!['g','by'].includes(w)));
+const xabv=n=>{const m=n.match(/(\d+\.\d+)\s*ดีกรี/);return m?+m[1]:0};
+function xauto(beer,abv){const a=xtok(beer);if(!a.size)return{c:'',amb:1};const sc=XP.map(([c,n])=>{const b=xtok(n);let i=0;a.forEach(w=>{if(b.has(w))i++});const u=a.size+b.size-i;return{c,s:i/u+(abv&&Math.abs(xabv(n)-N(abv))<.05?.05:0),n}}).sort((x,y)=>y.s-x.s);
+ return sc[0].s<.5?{c:'',amb:1}:{c:sc[0].c,amb:sc[1].s===sc[0].s}}
+/* ---- ข้อมูลที่ผู้ใช้กรอก เก็บในชีต Options (ค่าล่าสุดชนะ) ---- */
+const xo=(cat,kf)=>{const m={};(S.opts||[]).forEach(o=>{if(o.cat===cat){const a=o.val.split('\t');m[kf(a)]=a}});return m};
+const xsave=(cat,a,msg)=>act('xmap',{opts:[[cat,a.map(x=>String(x??'').replace(/\t/g,' ')).join('\t')+'\t'+Date.now()]]},msg||'บันทึกแล้ว ✔');
+const XMAP=()=>{const m={};Object.entries(xo('xmap',a=>a[0])).forEach(([b,a])=>m[b]=a[1]);return m};
+const xdt=d=>{const[y,m,dd]=d.slice(0,10).split('-');return dd+'/'+m+'/'+(+y+543)};
+const xmo=()=>$('#xsm').value||today().slice(0,7);
+const xmn=(m,k)=>{let[y,mm]=m.split('-').map(Number);mm+=k;y+=Math.floor((mm-1)/12);mm=((mm-1)%12+12)%12+1;return y+'-'+String(mm).padStart(2,'0')};
+const xBeers=()=>{const m={};S.brews.filter(b=>!b.cancel&&['ferm','kegged','stamped'].includes(b.status)).forEach(b=>{const r=m[b.beer]=m[b.beer]||{abv:''};if(b.abv)r.abv=b.abv});S.orders.forEach(o=>J(o.items).forEach(i=>{if(i.beer&&!m[i.beer])m[i.beer]={abv:''}}));return m};
+const xRes=beer=>{const mp=XMAP(),B=xBeers()[beer]||{},e=mp[beer];if(e!==undefined)return{c:e==='-'?'':e,skip:e==='-',how:'ตั้งค่าแล้ว'};const a=xauto(beer,B.abv);return a.amb||!a.c?{c:'',amb:1,how:'ต้องเลือก'}:{c:a.c,how:'อัตโนมัติ'}};
+/* ---- สูตรวัตถุดิบต่อการต้ม 1 ครั้ง (กก.) — ค่าตั้งต้นจากตารางของเจ้าของ แก้ไขได้ ---- */
+const XSEED=[['brewsphere lager',160,1,.5],['brewsphere ipa',160,3,.5],['juniper wheat',160,1,.5],['yuzu',160,1,.5],['haplab',220,2.5,.8],['black jack',220,2.5,.8],['minho alone',160,3,.5],['brewsphere pale ale',160,2,.5],['brewsphere dark lager',160,1,.5],['newmoon',220,2.5,.8],['nebula hill',180,3,.5],['raknar rockbock',180,1,.5],['raknar rogbok',180,1,.5],['kingpin plis',140,3,.5],['luky daky',120,1,.5]];
+const xseed=beer=>{const a=xtok(beer);let best=null;XSEED.forEach(s=>{const b=xtok(s[0]);if([...b].every(w=>a.has(w))&&(!best||b.size>best.n))best={n:b.size,m:s[1],h:s[2],y:s[3]}});return best};
+const xrecOf=beer=>{const r=xo('xrec',a=>a[0])[beer];if(r)return{m:N(r[1]),h:N(r[2]),y:N(r[3]),src:'ok'};const d=xseed(beer);return d?{m:d.m,h:d.h,y:d.y,src:'def'}:null};
+/* ---- คำนวณรายการบัญชี (แคชต่อการเรนเดอร์) ---- */
+let XC={};
+const xbuyNote=shop=>{const b=xo('xbuy',a=>a[0])[shop];return b?[b[1]&&'เลขประจำตัวผู้เสียภาษี '+b[1],b[2]&&'ที่อยู่ '+b[2]].filter(Boolean).join(' '):''};
+const xG=mo=>XC['g'+mo]=XC['g'+mo]||xGoods(mo),xM=mo=>XC['m'+mo]=XC['m'+mo]||xMats(mo);
+function xGoods(mo){const out={},bad={},bk=id=>S.brews.find(b=>b.id==id);
+ const put=(beer,d,item,col,q,note)=>{const r=xRes(beer);if(r.skip)return;if(!r.c){bad[beer]=1;return}(out[r.c]=out[r.c]||[]).push({d,item,col,q,note,k:{D:0,G:1,K:2}[col]})};
+ S.brews.filter(b=>!b.cancel&&['kegged','stamped'].includes(b.status)&&(b.kegDate||'').slice(0,7)===mo&&N(b.kegQty)>0).forEach(b=>put(b.beer,b.kegDate.slice(0,10),'ผลิต/บรรจุ '+b.beer,'D',N(b.kegQty),''));
+ // ขาย: นับตามวันที่ออเดอร์ เฉพาะรายการที่ติดแสตมป์
+ S.orders.forEach(o=>{const d=(o.odate||o.ts||'').slice(0,10);if(d.slice(0,7)!==mo)return;const nt=xbuyNote(o.shop);J(o.items).forEach(i=>{if(i.tp==='N')return;const b=bk(i.id),q=N(i.kegs);if(q>0)put(b?b.beer:i.beer,d,'จำหน่าย '+o.shop,'G',q,nt)})});
+ Object.values(xo('xloss',a=>a[0])).forEach(a=>{const[,c,d,q,nt]=a;if(N(q)>0&&(d||'').slice(0,7)===mo)(out[c]=out[c]||[]).push({d,item:'สินค้าสูญเสีย'+(nt?' '+nt:''),col:'K',q:N(q),note:'',k:2})});
+ Object.values(out).forEach(a=>a.sort((x,y)=>x.d<y.d?-1:x.d>y.d?1:x.k-y.k));return{out,bad:Object.keys(bad)}}
+function xMats(mo){const out={malt:[],hop:[],yeast:[]};
+ (S.recv||[]).filter(r=>(r.date||'').slice(0,7)===mo&&out[r.mat]).forEach(r=>out[r.mat].push({d:r.date,item:'รับวัตถุดิบ'+(r.note?' '+r.note:''),doc:r.doc,col:'D',q:N(r.qty),k:0}));
+ S.brews.filter(b=>!b.cancel&&['ferm','kegged','stamped'].includes(b.status)&&(b.brewDate||'').slice(0,7)===mo).forEach(b=>{const it=J(b.items,'{}'),rc=xrecOf(b.beer);XM.forEach(([k])=>{const q=rc?{malt:rc.m,hop:rc.h,yeast:rc.y}[k]:(it[k]||[]).reduce((s,x)=>s+N(x.q),0);if(q>0)out[k].push({d:b.brewDate.slice(0,10),item:'ผลิต '+b.beer,doc:'',col:'E',q:Math.round(q*1000)/1000,k:1})})});
+ Object.values(out).forEach(a=>a.sort((x,y)=>x.d<y.d?-1:x.d>y.d?1:x.k-y.k));return out}
+/* ---- ยอดยกมา / คงเหลือ: ใช้ที่กรอกไว้ ถ้าไม่กรอกคำนวณต่อจากเดือนก่อน ---- */
+const xbals=()=>xo('xbal',a=>a[0]+'|'+a[1]+'|'+a[2]);
+function xBal(kind,key,mo){const B=xbals();let prev=0,r;
+ for(let k=-24;k<=0;k++){const m=xmn(mo,k),e=B[m+'|'+kind+'|'+key]||[],rows=kind=='m'?xM(m)[key]:(xG(m).out[key]||[]),s=c=>rows.filter(x=>x.col==c).reduce((t,x)=>t+x.q,0);
+  const so=e[3]!==undefined&&e[3]!==''?N(e[3]):null,sc=e[4]!==undefined&&e[4]!==''?N(e[4]):null,open=so!==null?so:prev,inn=s('D'),out=kind=='m'?s('E'):s('G'),loss=kind=='m'?0:s('K'),calc=open+inn-out-loss,close=sc!==null?sc:calc;
+  r={open,inn,out,loss,calc,close,so:e[3]||'',sc:e[4]||''};prev=close}
+ return r}
+const XH2=['วันเดือนปี ','รายการ','หลักฐานเลขที่','รับจากการผลิต','รับคืนจากคลังสินค้าทัณฑ์บน','อื่น ๆ','จำหน่ายในประเทศ','จำหน่ายต่างประเทศ','ใช้ในโรงอุตสาหกรรม','คลังสินค้าทัณฑ์บน','เสียหาย','อื่นๆ - เสียภาษี ','อื่นๆ - ไม่เสียภาษี ','อื่นๆ - ยกเว้นเป็นวัตถุดิบ ','อื่นๆ - ยกเว้นเพื่อบริจาค ','หมายเหตุ'];
+const XH1=['วันเดือนปี ','รายการ','หลักฐานเลขที่','รับเดือนนี้','ผลิตสินค้าตามพิกัดฯ','ผลิตสินค้าอื่น','เสียหาย','อื่น ๆ','หมายเหตุ'];
+function xFile(kind,name,code,list,mo){const[y,m]=mo.split('-'),is2=kind=='2',nc=is2?16:9,rows=[[XCO],['สินค้า '+name],['ประจำเดือน '+THM[m-1]+' '+(+y+543)],is2?XH2:XH1];
+ if(is2)rows[2][4]='รหัสสินค้า ผปก.: '+xpc(code);
+ list.forEach(r=>{const a=new Array(nc).fill(null);a[0]=xdt(r.d);a[1]=r.item;if(r.doc)a[2]=r.doc;a[{D:3,G:6,E:4,K:10}[r.col]]=r.q;if(r.note)a[nc-1]=r.note;rows.push(a)});
+ return xlsBuild(rows,nc)}
+function xMain(kind,mo){const rows=[kind=='2'?['รหัสสินค้า','ชื่อสินค้า','คงเหลือยกมา']:['รายการวัตถุดิบหรือส่วนประกอบในการผลิตสินค้า','ชื่อวัตถุดิบ','คงเหลือยกมา']],f=kind=='2'?v=>String(Math.round(v*1000)/1000):v=>v.toFixed(2);
+ if(kind=='1')XM.forEach(([k,n],i)=>rows.push(['700100000'+(i+1),n,f(xBal('m',k,mo).open)]));
+ XP.forEach(([c,n])=>rows.push([c,n,f(xBal('p',c,mo).open)]));
+ return xlsBuild(rows,3,{pre:XLS_PRE2,xf:(r,c)=>r===0?0x15:c===2?0x17:0x15})}
+const xBl=u=>new Blob([u],{type:'application/vnd.ms-excel'});
+function xFiles(mo){XC={};const g=xG(mo),mt=xM(mo),f=[];
+ XP.forEach(([c,n],i)=>{if(g.out[c])f.push({k:'2',t:'ภส.07-02',n,l:g.out[c],fn:`N60PS0702_${XTX}_20_${String(i+1).padStart(2,'0')}_${mo}.xls`,mk:()=>xFile('2',n,c,g.out[c],mo)})});
+ XM.forEach(([k,n])=>{if(mt[k].length)f.push({k:'1',t:'ภส.07-01',n,l:mt[k],fn:`N60PS0701_${XTX}_20_${k}_${mo}.xls`,mk:()=>xFile('1',n,'',mt[k],mo)})});
+ return{f,bad:g.bad}}
+function xsDl(i){const mo=xmo(),r=xFiles(mo).f[i];if(r)dlBlob(xBl(r.mk()),r.fn)}
+function xsZip(kind){const mo=xmo(),f=xFiles(mo).f.filter(x=>x.k==kind);if(!f.length)return toast('ไม่มีข้อมูลในเดือนนี้');dlBlob(zipBuild(f.map(x=>[x.fn,x.mk()])),`ภส.07-0${kind}_${mo}.zip`)}
+function xsMain(kind){const mo=xmo();XC={};dlBlob(xBl(xMain(kind,mo)),kind=='2'?`PS0702MAIN_${XTX}_20_${mo}.xls`:`PS0701MAIN_Material_${XTX}_20_${mo}.xls`)}
+/* ---- ตัวจัดการฟอร์ม ---- */
+const xsMap=(beer,c)=>xsave('xmap',[beer,c||'-'],'บันทึกการจับคู่แล้ว ✔');
+function xsRec(el){const tr=el.closest('tr'),v=c=>tr.querySelector('.'+c).value;xsave('xrec',[tr.dataset.b,v('rm')||0,v('rh')||0,v('ry')||0])}
+function xsBal(el){const tr=el.closest('tr'),[k,key]=tr.dataset.k.split('|');xsave('xbal',[xmo(),k,key,tr.querySelector('.bo').value.trim(),tr.querySelector('.bc').value.trim()])}
+function xsLoss(){const c=$('#xlp').value,d=$('#xld').value,q=$('#xlq').value;if(!c||!d||!(N(q)>0))return alert('เลือกสินค้า วันที่ และจำนวนที่สูญเสีย (ถัง)');xsave('xloss',[Date.now().toString(36),c,d,q,$('#xln').value.trim()]).then(ok=>{if(ok){$('#xlq').value='';$('#xln').value=''}})}
+const xsLossDel=(id,c,d,n)=>confirm('ลบรายการสูญเสียนี้?')&&xsave('xloss',[id,c,d,0,n],'ลบแล้ว');
+function xsBuy(el){const tr=el.closest('tr');xsave('xbuy',[tr.dataset.s,tr.querySelector('.bt').value.trim(),tr.querySelector('.ba').value.trim()])}
+async function xsRecv(){const d={date:$('#xrd').value,mat:$('#xrm').value,qty:$('#xrq').value,doc:$('#xrn').value.trim(),note:$('#xro').value.trim()};if(!d.date||!d.mat||!(N(d.qty)>0))return alert('ใส่วันที่ ชนิดวัตถุดิบ และจำนวน (กก.)');if(await act('recv',{d})){$('#xrq').value='';$('#xrn').value='';$('#xro').value=''}}
+const xsDel=id=>confirm('ลบรายการรับวัตถุดิบนี้?')&&act('del',{s:'r',id},'ลบแล้ว');
+const B_=n=>N(n).toLocaleString('th-TH',{maximumFractionDigits:3});
+function rXs(){if(!su())return;XC={};const mo=xmo(),BS_=xBeers(),pn=n=>n.replace(/ ดีกรี 20.000 ลิตร ถัง/,'').replace(/^G - /,'');
+ const opt=sel=>'<option value="">— เลือกสินค้า —</option>'+XP.map(([c,n])=>`<option value="${esc(c)}"${c==sel?' selected':''}>${esc(pn(n))}</option>`).join('')+`<option value="-"${sel=='-'?' selected':''}>ไม่นำเข้าบัญชี (ข้าม)</option>`;
+ const beers=Object.keys(BS_).sort();
+ $('#xmap').innerHTML='<table><tr><th>ชื่อเบียร์ในระบบ</th><th>สินค้าในระบบสรรพสามิต</th><th>สถานะ</th></tr>'+beers.map(b=>{const r=xRes(b);return `<tr><td>${esc(b)}</td><td><select data-b="${esc(b)}" onchange="xsMap(this.dataset.b,this.value)">${opt(r.skip?'-':r.c)}</select></td><td style="white-space:nowrap;color:${r.amb?'var(--r)':'#99a'}">${r.how}</td></tr>`}).join('')+'</table>';
+ $('#xrec').innerHTML='<table><tr><th>เบียร์</th><th>Malt (กก.)</th><th>Hops (กก.)</th><th>Yeast (กก.)</th><th>สถานะ</th></tr>'+beers.map(b=>{const r=xrecOf(b),i=(c,v)=>`<input class="${c}" type="number" step="any" inputmode="decimal" value="${r?v:''}" style="width:78px" onchange="xsRec(this)">`;return `<tr data-b="${esc(b)}"><td>${esc(b)}</td><td>${i('rm',r&&r.m)}</td><td>${i('rh',r&&r.h)}</td><td>${i('ry',r&&r.y)}</td><td style="white-space:nowrap;color:${!r||r.src=='def'?'var(--r)':'#99a'}">${!r?'ไม่มีสูตร: ใช้ตามที่กรอกใน Prepare':r.src=='def'?'ค่าเริ่มต้น (แก้/กดยืนยัน)':'บันทึกแล้ว'}</td></tr>`}).join('')+'</table>';
+ const kk=$('#xrd');if(!kk.value)kk.value=today();if(!$('#xld').value)$('#xld').value=today();
+ const rc=(S.recv||[]).slice().sort((a,b)=>a.date<b.date?1:-1);
+ $('#xrl').innerHTML='<table><tr><th>วันที่</th><th>วัตถุดิบ</th><th>กก.</th><th>เลขที่เอกสาร</th><th>หมายเหตุ</th><th></th></tr>'+(rc.map(r=>`<tr><td>${fd(r.date)}</td><td>${esc((XM.find(x=>x[0]==r.mat)||[])[2])}</td><td>${B_(r.qty)}</td><td>${esc(r.doc)}</td><td>${esc(r.note)}</td><td><button class="s sm" onclick="xsDel('${r.id}')">ลบ</button></td></tr>`).join('')||'<tr><td colspan="6">ยังไม่มีรายการรับวัตถุดิบ</td></tr>')+'</table>';
+ const br=(k,key,n)=>{const b=xBal(k,key,mo);return `<tr data-k="${k}|${esc(key)}"><td>${esc(n)}</td><td><input class="bo" type="number" step="any" value="${esc(b.so)}" placeholder="${B_(b.open)}" style="width:84px" onchange="xsBal(this)"></td><td>${B_(b.inn)}</td><td>${B_(b.out)}</td><td>${k=='p'?B_(b.loss):'-'}</td><td><input class="bc" type="number" step="any" value="${esc(b.sc)}" placeholder="${B_(b.calc)}" style="width:84px" onchange="xsBal(this)"></td></tr>`};
+ $('#xbal').innerHTML='<table><tr><th>รายการ</th><th>ยอดยกมา</th><th>รับ</th><th>ใช้/จำหน่าย</th><th>สูญเสีย</th><th>คงเหลือ</th></tr>'+XM.map(([k,n,s])=>br('m',k,n.replace(/^R - /,'')+' (กก.)')).join('')+XP.map(([c,n])=>br('p',c,pn(n)+' (ถัง)')).join('')+'</table><p class="hint">ช่องว่าง = ระบบคำนวณให้ (ตัวเลขจางในช่อง) ถ้ากรอกจะใช้ค่าที่กรอกแทน และเดือนถัดไปจะยกยอดต่อให้อัตโนมัติ</p>';
+ $('#xlp').innerHTML=opt('');const ls=Object.values(xo('xloss',a=>a[0])).filter(a=>N(a[3])>0&&(a[2]||'').slice(0,7)==mo);
+ $('#xll').innerHTML=ls.length?'<table><tr><th>วันที่</th><th>สินค้า</th><th>ถัง</th><th>หมายเหตุ</th><th></th></tr>'+ls.map(a=>`<tr><td>${fd(a[2])}</td><td>${esc(pn((XP.find(x=>x[0]==a[1])||[,''])[1]))}</td><td>${B_(a[3])}</td><td>${esc(a[4])}</td><td><button class="s sm" data-a='${esc(JSON.stringify(a))}' onclick="const a=JSON.parse(this.dataset.a);xsLossDel(a[0],a[1],a[2],a[4])">ลบ</button></td></tr>`).join('')+'</table>':'<p class="hint">ไม่มีรายการสูญเสียในเดือนนี้</p>';
+ const shops=[...new Set(S.orders.map(o=>o.shop).filter(Boolean))].sort(),by=xo('xbuy',a=>a[0]);
+ $('#xbuy').innerHTML='<table><tr><th>ร้านค้า</th><th>เลขประจำตัวผู้เสียภาษี</th><th>ที่อยู่</th></tr>'+(shops.map(s=>{const b=by[s]||[];return `<tr data-s="${esc(s)}"><td>${esc(s)}</td><td><input class="bt" value="${esc(b[1]||'')}" style="width:150px" onchange="xsBuy(this)"></td><td><input class="ba" value="${esc(b[2]||'')}" style="min-width:220px" onchange="xsBuy(this)"></td></tr>`}).join('')||'<tr><td colspan="3">ยังไม่มีออเดอร์</td></tr>')+'</table>';
+ const{f,bad}=xFiles(mo),tb=k=>f.map((x,i)=>[x,i]).filter(([x])=>x.k==k).map(([x,i])=>{const s=a=>x.l.filter(r=>r.col==a).reduce((t,r)=>t+r.q,0);return `<tr><td>${esc(x.n)}</td><td>${x.l.length}</td><td>${k=='2'?`${B_(s('D'))} / ${B_(s('G'))}${s('K')?' / '+B_(s('K')):''}`:`${B_(s('D'))} / ${B_(s('E'))}`}</td><td style="white-space:nowrap"><button class="d sm" onclick="xsDl(${i})">⬇ .xls</button></td></tr>`}).join('');
+ const t2=tb('2'),t1=tb('1');
+ const ng=[...XM.map(([k,n])=>['m',k,n.replace(/^R - /,'')]),...XP.map(([c,n])=>['p',c,pn(n)])].filter(([k,key])=>xBal(k,key,mo).close<0).map(x=>x[2]);
+ $('#xw').innerHTML=(bad.length?`<p style="color:var(--r)">⚠ เบียร์ที่ยังไม่ได้จับคู่ (ไม่ถูกรวมในไฟล์): ${bad.map(esc).join(', ')} — เลือกสินค้าในหัวข้อ 1 ก่อน</p>`:'')+(ng.length?`<p style="color:var(--r)">⚠ ยอดคงเหลือติดลบ (ตรวจยอดยกมา/รับเข้า): ${ng.map(esc).join(', ')}</p>`:'');
+ $('#x2').innerHTML=t2?`<div class="sc"><table><tr><th>สินค้า</th><th>แถว</th><th>รับผลิต / จำหน่าย / สูญเสีย (ถัง)</th><th></th></tr>${t2}</table></div><button class="s" onclick="xsZip('2')">⬇ ทั้งหมดเป็น ZIP</button>`:'<p class="hint">ไม่มีความเคลื่อนไหวของสินค้าในเดือนนี้ (ต้องมีการบรรจุ Keg หรือออเดอร์ที่ติดแสตมป์)</p>';
+ $('#x1').innerHTML=t1?`<div class="sc"><table><tr><th>วัตถุดิบ</th><th>แถว</th><th>รับ / ใช้ผลิต (กก.)</th><th></th></tr>${t1}</table></div><button class="s" onclick="xsZip('1')">⬇ ทั้งหมดเป็น ZIP</button>`:'<p class="hint">ไม่มีรายการวัตถุดิบในเดือนนี้</p>'}
 </script></body></html>
