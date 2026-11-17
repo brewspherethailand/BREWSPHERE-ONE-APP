@@ -80,7 +80,34 @@ nav::-webkit-scrollbar{height:7px}nav::-webkit-scrollbar-track{background:#333;b
  #st td.tr select,#st td.tr input{flex:1 1 90px;width:auto!important;min-width:0}#st td.tr button{flex:0 0 auto}
  .two{grid-template-columns:1fr!important}
 }
-input[list]{background-image:linear-gradient(45deg,transparent 50%,#aab 50%),linear-gradient(135deg,#aab 50%,transparent 50%);background-position:calc(100% - 18px) 55%,calc(100% - 12px) 55%;background-size:6px 6px;background-repeat:no-repeat;padding-right:32px}tr.sentrow td{opacity:.4;filter:grayscale(1);font-size:12px}tr.sentrow:hover td{opacity:.8}.cxb{display:inline-block;background:#e5313b;color:#fff;font-weight:700;font-size:12px;border-radius:8px;padding:2px 8px;margin-bottom:4px}.chip.cx,.tk.cx{border-color:#e5313b!important;box-shadow:0 0 0 1px #e5313b66}.chip.cx b,.tk.cx h2{color:#ff6b73;text-decoration:line-through}td.cxt{color:#ff4d4d;font-weight:700}</style></head><body>
+input[list]{background-image:linear-gradient(45deg,transparent 50%,#aab 50%),linear-gradient(135deg,#aab 50%,transparent 50%);background-position:calc(100% - 18px) 55%,calc(100% - 12px) 55%;background-size:6px 6px;background-repeat:no-repeat;padding-right:32px}tr.sentrow td{opacity:.4;filter:grayscale(1);font-size:12px}tr.sentrow:hover td{opacity:.8}.cxb{display:inline-block;background:#e5313b;color:#fff;font-weight:700;font-size:12px;border-radius:8px;padding:2px 8px;margin-bottom:4px}.chip.cx,.tk.cx{border-color:#e5313b!important;box-shadow:0 0 0 1px #e5313b66}.chip.cx b,.tk.cx h2{color:#ff6b73;text-decoration:line-through}td.cxt{color:#ff4d4d;font-weight:700}
+/* ===== Fermenter page: modern look ===== */
+#p-fer .bar{background:linear-gradient(135deg,#14161fcc,#0a0b12cc);border:1px solid #ffffff1f;border-left:4px solid var(--a);border-radius:14px;padding:12px 14px;box-shadow:0 6px 20px #0006}
+#p-fer .bar>b{font-size:15px;letter-spacing:.2px}
+#p-fer .chip{background:linear-gradient(160deg,#23263a,#171926);border:1px solid #ffffff22;border-radius:12px;padding:10px 12px;transition:transform .15s,border-color .15s,box-shadow .15s}
+#p-fer .chip:hover{transform:translateY(-2px);border-color:var(--a);box-shadow:0 8px 18px #f5a62326}
+#p-fer .chip b{font-size:15px}#p-fer .chip.due{background:linear-gradient(160deg,#5a3500,#3a2200)}
+#tanks{gap:14px;margin:14px 0}
+#tanks .tk{position:relative;overflow:hidden;border:1px solid #ffffff1f;border-radius:18px;padding:14px 16px 16px;min-height:190px;box-shadow:0 8px 24px #0007;transition:transform .15s,box-shadow .15s}
+#tanks .tk.red{background:linear-gradient(165deg,#2a1519f2,#12080bf2);border-color:#e5384a66;cursor:pointer}
+#tanks .tk.red:hover{transform:translateY(-3px);box-shadow:0 12px 28px #e5384a33}
+#tanks .tk.red::before{content:'';position:absolute;left:0;top:0;right:0;height:4px;background:linear-gradient(90deg,#ff5a6a,#f5a623)}
+#tanks .tk.grn{background:linear-gradient(165deg,#0d2418cc,#07120dcc);border:1.5px dashed #16c06088}
+.tkh{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.tkn{width:44px;height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;color:#000;background:linear-gradient(135deg,#ffc547,#ff8a00);flex:none}
+.tk.grn .tkn{background:linear-gradient(135deg,#4ee38a,#16c060)}
+.tkh small{display:block;color:#aab;font-size:11px;text-transform:uppercase;letter-spacing:.8px}.tkh b{font-size:15px}
+.tkh .day{margin-left:auto;font-style:normal;font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;background:#ffffff1a;color:#ffd27a;white-space:nowrap}
+.tkb{margin:2px 0 4px;font-size:20px;line-height:1.2;word-break:break-word}
+.tk .own{font-size:13px;color:#b9bdd0;margin:2px 0 10px}
+.st3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:8px 0 12px}
+.st3>div{background:#ffffff0f;border:1px solid #ffffff14;border-radius:10px;padding:7px 8px;text-align:center}
+.st3 small{display:block;color:#99a;font-size:11px}.st3 b{font-size:15px}
+.pgl{display:flex;justify-content:space-between;font-size:12px;color:#b9bdd0;margin-bottom:5px}
+.pgb{height:8px;background:#ffffff1a;border-radius:99px;overflow:hidden}.pgb i{display:block;height:100%;background:linear-gradient(90deg,#16c060,#7dffb0);border-radius:99px}
+.tk.grn>p{color:#9fd8b6!important;margin:2px 0 8px!important}
+.nbtn{box-shadow:0 6px 18px #ff6d0055}
+</style></head><body>
 <div id="login"><div id="lbox"><img class="lg" src="logo.png" alt="Brewsphere">
 <label>Username<input id="u" autocomplete="username"></label><label>Password<input id="p" type="password" autocomplete="current-password" onkeydown="if(event.key=='Enter')login()"></label>
 <div id="le"></div><button id="lb" onclick="login()">เข้าสู่ระบบ</button></div></div>
@@ -178,9 +205,10 @@ function rFer(){const td=today(),Q=BR(['queue']).sort((a,b)=>a.brewDate>b.brewDa
  $('#wbar').innerHTML=BR(['wait']).map(b=>chip(b,`bm('${b.id}')`,'',`฿${B(bt(b))} • คลิกเพื่อยืนยันวันต้ม`)).join('')||'<i style="color:#99a">ไม่มีรายการ</i>';
  $('#qbar').innerHTML=Q.map(b=>chip(b,`bm('${b.id}')`,b.brewDate<=td?'due':'',`📅 ${fd(b.brewDate)}${b.brewDate<=td?' • ถึงวันต้มแล้ว':''}`)).join('')||'<i style="color:#99a">ไม่มีคิวต้ม</i>';
  $('#tanks').innerHTML=[1,2,3,4,5,6,7,8].map(i=>{const b=S.brews.find(x=>x.status=='ferm'&&!x.cancel&&x.tank==i);
-  if(!b)return `<div class="tk grn"><h3>Fermenter ${i}<em>ว่าง</em></h3><p>เลือกเบียร์จากคิวต้ม:</p><div class="row">${Q.map(q=>chip(q,`toTank('${q.id}',${i})`,'sm '+(q.brewDate<=td?'due':''),fd(q.brewDate))).join('')||'<small>— ไม่มีเบียร์ในคิว —</small>'}</div></div>`;
+  if(!b)return `<div class="tk grn"><div class="tkh"><span class="tkn">${i}</span><div><small>Fermenter</small><b style="color:#4ee38a">ว่าง</b></div></div><p>เลือกเบียร์จากคิวต้ม:</p><div class="row">${Q.map(q=>chip(q,`toTank('${q.id}',${i})`,'sm '+(q.brewDate<=td?'due':''),fd(q.brewDate))).join('')||'<small>— ไม่มีเบียร์ในคิว —</small>'}</div></div>`;
   const L=J(b.logs).filter(l=>l.t),last=t=>L.filter(l=>l.t==t).pop()||{},fg=last('FG and PH'),n=J(b.logs).filter(rec).length;
-  return `<div class="tk red${b.cancel?' cx':''}" onclick="fm('${b.id}')"><h3>Fermenter ${i}<em>ไม่ว่าง</em></h3>${cxB(b)}<h2 style="margin:4px 0">${esc(b.beer)}</h2><p>Owner: <b>${esc(b.owner)}</b></p><p>Brewdate: <b>${fd(b.brewDate)}</b></p><p>FG/pH ล่าสุด: <b>${fg.fg?esc(fg.fg)+' / '+esc(fg.ph):'-'}</b> • Temp: <b>${last('Temp (C)').tp||'-'}</b></p><p>บันทึกครบ <b>${n}/10</b></p></div>`}).join('');
+  const dy=b.brewDate?Math.max(1,Math.floor((new Date(td)-new Date(b.brewDate.slice(0,10)))/864e5)+1):0;
+  return `<div class="tk red${b.cancel?' cx':''}" onclick="fm('${b.id}')"><div class="tkh"><span class="tkn">${i}</span><div><small>Fermenter</small><b>ไม่ว่าง</b></div>${dy?`<em class="day">วันที่ ${dy}</em>`:''}</div>${cxB(b)}<h2 class="tkb">${esc(b.beer)}</h2><p class="own">👤 ${esc(b.owner)} &nbsp;•&nbsp; 🗓 ${fd(b.brewDate)}</p><div class="st3"><div><small>FG</small><b>${fg.fg?esc(fg.fg):'-'}</b></div><div><small>pH</small><b>${fg.ph?esc(fg.ph):'-'}</b></div><div><small>Temp °C</small><b>${last('Temp (C)').tp||'-'}</b></div></div><div class="pgl"><span>บันทึกครบ</span><b>${n}/10</b></div><div class="pgb"><i style="width:${Math.min(100,n*10)}%"></i></div></div>`}).join('');
  $('#kbar').innerHTML=BR(['kegged']).map(b=>`<div class="chip" onclick="sm('${b.id}')">${b.stampQty?'<div class="bd">✔ พร้อมติดแสตมป์</div>':''}<b>${esc(b.beer)}</b><span>${esc(b.owner)}</span><small>บรรจุ ${fd(b.kegDate)} • ${esc(b.kegQty)} Kegs</small></div>`).join('')||'<i style="color:#99a">ไม่มีรายการ</i>'}
 const cxNote=b=>b.cancel?`<p style="background:#5a1218;color:#ff7b7b;border:1px solid #ff4d4d;border-radius:10px;padding:8px 12px;font-weight:700">❌ ยกเลิกการต้ม — โดย ${esc(b.cancelBy||'-')} • ${fd(b.cancelDate)}</p>`:'';
 const cxBtn=b=>su()&&['prep','wait','queue','ferm'].includes(b.status)?(b.cancel?`<button class="s" onclick="cxAct('${b.id}',0)">↩ ยกเลิกการยกเลิก</button>`:`<button class="rd" onclick="cxAct('${b.id}',1)">❌ ยกเลิกการต้ม</button>`):'';
