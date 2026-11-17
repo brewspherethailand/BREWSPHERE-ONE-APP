@@ -57,6 +57,7 @@ nav::-webkit-scrollbar{height:7px}nav::-webkit-scrollbar-track{background:#333;b
 .r2 label,.r3 label,.r4 label,.ir label,.lr label,.ol label{margin:0}.r2,.r3,.r4{margin-top:12px}
 .r2{grid-template-columns:1fr 1fr}.r3{grid-template-columns:2fr 1fr 1fr}.r4{grid-template-columns:repeat(3,1fr)}
 .ir,.lr,.ol{border:1px solid #fff2;border-radius:12px;padding:10px;margin-top:10px;background:#ffffff08}
+.ir{position:relative}.ir .xr{position:absolute;top:-9px;right:-6px;width:26px;height:26px;border-radius:50%;border:0;background:#c0392b;color:#fff;font-size:14px;line-height:26px;padding:0;margin:0;cursor:pointer}
 .ir3{grid-template-columns:2fr 1fr 1fr}.ir5{grid-template-columns:2fr 1fr 1fr 1fr 1fr}
 .lr{grid-template-columns:1fr 1.3fr 2fr}.lr>*{min-width:0}.lr input,.lr select{min-width:0;max-width:100%}.lv{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;align-items:end}.ln{display:none}.hint{color:#99a;font-size:12px;padding-bottom:12px}
 .ol{grid-template-columns:2.4fr 1fr 1fr 1fr}
@@ -360,8 +361,9 @@ const fdd=s=>{if(!s)return'';if(!/^\d{4}-\d\d-\d\d/.test(s))return s;const[y,m,d
 const busy=on=>{$('#busy').style.display=on?'flex':'none'};
 document.addEventListener('click',e=>{if(e.target.type=='date')try{e.target.showPicker()}catch(_){}});
 const net=x=>{const p=N(x.p),d=N(x.dv);return Math.max(0,x.dt=='%'?p*(1-d/100):p-d)};
-const rowH=c=>{const o=c=='other';return `<div class="ir ${o?'ir5':'ir3'}" data-c="${c}"><label class="w">รายการ<select class="ns" onchange="nsel(this)">${nopt(c)}</select><input class="n" placeholder="พิมพ์ชื่อใหม่" style="display:none;margin-top:6px"></label><label>จำนวน (Kgs)<input class="q" type="number" step="any"></label><label>ราคา (THB)<input class="p" type="number" step="any"></label>${o?'<label>ส่วนลด<input class="dv" type="number" step="any"></label><label>ลดเป็น<select class="dt"><option value="%">% เปอร์เซ็นต์</option><option value="฿">฿ บาท</option></select></label>':''}</div>`};
+const rowH=c=>{const o=c=='other';return `<div class="ir ${o?'ir5':'ir3'}" data-c="${c}"><button type="button" class="xr" title="ลบแถวนี้" onclick="delR(this)">✕</button><label class="w">รายการ<select class="ns" onchange="nsel(this)">${nopt(c)}</select><input class="n" placeholder="พิมพ์ชื่อใหม่" style="display:none;margin-top:6px"></label><label>จำนวน (Kgs)<input class="q" type="number" step="any"></label><label>ราคา (THB)<input class="p" type="number" step="any"></label>${o?'<label>ส่วนลด<input class="dv" type="number" step="any"></label><label>ลดเป็น<select class="dt"><option value="%">% เปอร์เซ็นต์</option><option value="฿">฿ บาท</option></select></label>':''}</div>`};
 const nopt=(c,cur)=>{const a=[...new Set(S.opts.filter(o=>o.cat==c).map(o=>o.val).concat(cur?[cur]:[]))].sort((x,y)=>x.localeCompare(y));return '<option value="">— เลือกรายการที่เคยกรอก —</option>'+a.map(v=>`<option value="${esc(v)}">${esc(v)}</option>`).join('')+'<option value="__new">➕ พิมพ์ชื่อใหม่…</option>'};
+function delR(b){const r=b.parentNode,v=[...r.querySelectorAll('input,select')].some(e=>e.value&&e.value!='%'&&e.value!='__new');if(v&&!confirm('ลบรายการวัตถุดิบนี้ออกจากสูตร? (ชื่อยังอยู่ในรายการให้เลือก)'))return;r.remove()}
 function nsel(s){const i=s.parentNode.querySelector('.n');if(s.value=='__new'){i.style.display='';i.value='';i.focus()}else{i.style.display='none';i.value=s.value}}
 function nsync(r){const s=r.querySelector('.ns'),i=r.querySelector('.n');if(!s||!i.value)return;s.innerHTML=nopt(r.dataset.c,i.value);s.value=i.value}
 function addR(c){$('#sec-'+c).insertAdjacentHTML('beforeend',rowH(c))}
