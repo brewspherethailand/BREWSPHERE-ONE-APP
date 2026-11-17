@@ -21,7 +21,7 @@ button:disabled{opacity:.35;cursor:not-allowed}button.s{background:#445;color:#f
 @keyframes bl{50%{opacity:.15}}@keyframes gl{50%{box-shadow:0 0 18px 4px var(--a)}}
 #app{display:none;padding:10px;max-width:1500px;margin:auto}#app.show{display:block;animation:up .8s}
 header{display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:5;padding:6px 0;background:#000b;backdrop-filter:blur(6px)}
-header img{height:42px;filter:invert(1)}@keyframes nbp{0%,100%{box-shadow:0 0 0 0 rgba(255,170,0,.55)}50%{box-shadow:0 0 0 9px rgba(255,170,0,0)}}.nbw{display:flex;justify-content:flex-end;margin:0 0 10px}.nbtn{background:linear-gradient(135deg,#ffb300,#ff6d00);color:#000;font-weight:700;font-size:16px;padding:12px 22px;border-radius:12px;margin:0;animation:nbp 2s infinite}
+header img{height:42px;filter:invert(1)}@keyframes nbp{0%,100%{box-shadow:0 0 0 0 rgba(255,170,0,.55)}50%{box-shadow:0 0 0 9px rgba(255,170,0,0)}}.nbw{display:flex;justify-content:flex-end;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 10px}.exs{width:auto;min-width:180px;max-width:260px;margin:0;min-height:48px}.exb{margin:0;min-height:48px;padding:0 18px;font-size:15px}.nbtn{background:linear-gradient(135deg,#ffb300,#ff6d00);color:#000;font-weight:700;font-size:16px;padding:12px 22px;border-radius:12px;margin:0;animation:nbp 2s infinite}
 nav{display:flex;gap:6px;flex:1;overflow-x:auto}nav button{background:#1b1b2e;color:#fff;margin:0;white-space:nowrap}nav button.on{background:var(--a);color:#000}
 .rt{display:flex;align-items:center;gap:8px;white-space:nowrap}.dot{width:12px;height:12px;border-radius:50%;background:var(--g);box-shadow:0 0 8px var(--g);animation:bl 1.2s infinite}.dot.bad{background:var(--r);box-shadow:0 0 8px var(--r)}
 .out{background:#fff;color:#000;margin:0}
@@ -125,7 +125,7 @@ h3{font-size:19px}
  nav button.on{background:linear-gradient(180deg,#f5a62333,transparent);color:var(--a);box-shadow:inset 0 3px 0 var(--a)}
  body{padding-bottom:84px}#toast{bottom:96px}
  .out{font-size:13px;padding:8px 12px;min-height:40px}.rt b{font-size:14px;max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
- .nbtn{width:100%;font-size:17px;padding:14px}.nbw{display:block}
+ .nbtn{width:100%;font-size:17px;padding:14px}.nbw{display:block}.exb,.exs{width:100%;max-width:none;margin-bottom:8px}
  .mb{width:100%!important;max-width:100%!important;max-height:94vh;overflow-y:auto;border-radius:18px 18px 0 0;-webkit-overflow-scrolling:touch}
  #m{padding:0}#m.on{align-items:flex-end}
  input,select{font-size:16px}
@@ -183,7 +183,7 @@ const SECS=[['malt','Malt'],['hop','Hops'],['yeast','Yeast'],['other','อื่
 const AF={scb:[['date','วันที่','','date'],['company','ชื่อบริษัท','company'],['docNo','เลขที่ใบเสร็จ/ใบกำกับภาษี'],['docDate','วันที่ในใบเสร็จ/ใบกำกับภาษี','','date'],['paid','จำนวนเงินจ่าย','','number'],['recv','จำนวนเงินรับ','','number']],
  kb:[['date','วันที่','','date'],['item','รายการเบิกจ่าย','item'],['paid','จำนวนเงินจ่าย','','number']]};
 const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-let T=sessionStorage.t||'',ME=JSON.parse(sessionStorage.me||'null'),S=null,pg='fer',oid='',ac='scb',timer;
+let T=localStorage.t||'',ME=JSON.parse(localStorage.me||'null'),S=null,pg='fer',oid='',ac='scb',timer;
 const today=()=>new Date(Date.now()-new Date().getTimezoneOffset()*6e4).toISOString().slice(0,10);
 const fd=s=>s?s.split('-').reverse().join('/'):'',J=(s,d='[]')=>{try{return JSON.parse(s||d)}catch(e){return JSON.parse(d)}},N=x=>Number(x)||0,B=n=>N(n).toLocaleString('th-TH',{maximumFractionDigits:2});
 const su=()=>ME.role==='super';
@@ -202,10 +202,10 @@ const toast=(t='บันทึกแล้ว ✔')=>{const e=$('#toast');e.tex
 const M=h=>{$('#m').innerHTML=`<div class="mb"><button class="x" onclick="cm()">✕</button>${h}</div>`;$('#m').classList.add('on')};const cm=()=>$('#m').classList.remove('on');
 
 async function login(){const b=$('#lb');b.classList.add('ld');$('#le').textContent='';
- try{const j=await call('login',{u:$('#u').value,p:$('#p').value});T=j.token;ME=j.me;sessionStorage.t=T;sessionStorage.me=JSON.stringify(ME);
+ try{const j=await call('login',{u:$('#u').value,p:$('#p').value});T=j.token;ME=j.me;localStorage.t=T;localStorage.me=JSON.stringify(ME);
   b.classList.remove('ld');b.classList.add('ok');b.textContent='✔ เข้าสู่ระบบแล้ว';setTimeout(()=>{$('#login').classList.add('hide');start()},900)}
  catch(e){b.classList.remove('ld');$('#le').textContent='ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง';$('#lbox').classList.add('shake');setTimeout(()=>$('#lbox').classList.remove('shake'),500)}}
-function out(){if(!confirm('ต้องการออกจากระบบใช่หรือไม่?'))return;sessionStorage.clear();location.reload()}
+function out(){if(!confirm('ต้องการออกจากระบบใช่หรือไม่?'))return;localStorage.removeItem('t');localStorage.removeItem('me');sessionStorage.clear();location.reload()}
 
 const f=(k,l,cat,type='text',v='')=>`<label>${l}<input data-k="${k}" type="${type}"${type=='number'?' step="any" min="0" inputmode="decimal"':''} value="${esc(v)}" ${cat?`list="dl-${cat}" data-o="${cat}"`:''}></label>`;
 function gf(r){const d={},o=[];r.querySelectorAll('[data-k]').forEach(i=>{const v=i.value.trim();d[i.dataset.k]=v;if(i.dataset.o&&v)o.push([i.dataset.o,v])});return{d,o}}
@@ -232,16 +232,88 @@ function rFer(){const td=today(),Q=BR(['queue']).sort((a,b)=>a.brewDate>b.brewDa
  $('#tanks').innerHTML=[1,2,3,4,5,6,7,8].map(i=>{const b=S.brews.find(x=>x.status=='ferm'&&!x.cancel&&x.tank==i);
   if(!b)return `<div class="tk grn"><div class="tkh"><span class="tkn">${i}</span><div><small>Fermenter</small><b style="color:#4ee38a">ว่าง</b></div></div><p>เลือกเบียร์จากคิวต้ม:</p><div class="row">${Q.map(q=>chip(q,`toTank('${q.id}',${i})`,'sm '+(q.brewDate<=td?'due':''),fd(q.brewDate))).join('')||'<small>— ไม่มีเบียร์ในคิว —</small>'}</div></div>`;
   const L=J(b.logs).filter(l=>l.t),last=t=>L.map((l,ix)=>[l,ix]).filter(([l])=>l.t==t&&(t=='FG and PH'?(l.fg||l.ph):t=='Temp (C)'?l.tp:1)).sort((a,b)=>((a[0].d||'')<(b[0].d||'')?-1:(a[0].d||'')>(b[0].d||'')?1:a[1]-b[1])).map(x=>x[0]).pop()||{},fg=last('FG and PH'),n=J(b.logs).filter(rec).length;
-  const dy=b.brewDate?Math.max(0,Math.floor((new Date(td)-new Date(b.brewDate.slice(0,10)))/864e5)):null;
-  return `<div class="tk red${b.cancel?' cx':''}" onclick="fm('${b.id}')"><div class="tkh"><span class="tkn">${i}</span><div><small>Fermenter</small><b>ไม่ว่าง</b></div>${dy!==null?`<em class="day">${dy} วัน</em>`:''}</div>${cxB(b)}<h2 class="tkb">${esc(b.beer)}</h2><p class="own">👤 ${esc(b.owner)} &nbsp;•&nbsp; 🗓 ${fd(b.brewDate)}</p>${dy!==null?`<p class="own" style="margin-top:-6px;color:#ffd27a">⏱ อยู่ในถังมาแล้ว <b>${dy}</b> วัน</p>`:''}<div class="st3"><div><small>FG</small><b>${fg.fg?esc(fg.fg):'-'}</b></div><div><small>pH</small><b>${fg.ph?esc(fg.ph):'-'}</b></div><div><small>Temp °C</small><b>${last('Temp (C)').tp||'-'}</b></div></div><div class="pgl"><span>บันทึกครบ</span><b>${n}/10</b></div><div class="pgb"><i style="width:${Math.min(100,n*10)}%"></i></div></div>`}).join('');
- $('#kbar').innerHTML=BR(['kegged']).map(b=>`<div class="chip" onclick="sm('${b.id}')">${b.stampQty?'<div class="bd">✔ พร้อมติดแสตมป์</div>':''}<b>${esc(b.beer)}</b><span>${esc(b.owner)}</span><small>บรรจุ ${fd(b.kegDate)} • ${esc(b.kegQty)} Kegs</small></div>`).join('')||'<i style="color:#99a">ไม่มีรายการ</i>'}
+  const t0=(b.tankDate||b.brewDate||'').slice(0,10),dy=t0?Math.max(0,Math.floor((new Date(td)-new Date(t0))/864e5)):null;
+  return `<div class="tk red${b.cancel?' cx':''}" onclick="fm('${b.id}')"><div class="tkh"><span class="tkn">${i}</span><div><small>Fermenter</small><b>ไม่ว่าง</b></div>${dy!==null?`<em class="day">${dy} วัน</em>`:''}</div>${cxB(b)}<h2 class="tkb">${esc(b.beer)}</h2><p class="own">👤 ${esc(b.owner)} &nbsp;•&nbsp; 🗓 ${fd(b.brewDate)}</p>${dy!==null?`<p class="own" style="margin-top:-6px;color:#ffd27a">⏱ อยู่ในถังมาแล้ว <b>${dy}</b> วัน</p>`:''}${b.og?`<p class="own" style="margin-top:-4px">🧪 OG <b>${esc(b.og)}</b> • pH เริ่มต้น <b>${esc(b.ogPh||'-')}</b></p>`:''}<div class="st3"><div><small>FG</small><b>${fg.fg?esc(fg.fg):'-'}</b></div><div><small>pH</small><b>${fg.ph?esc(fg.ph):'-'}</b></div><div><small>Temp °C</small><b>${last('Temp (C)').tp||'-'}</b></div></div><div class="pgl"><span>บันทึกครบ</span><b>${n}/10</b></div><div class="pgb"><i style="width:${Math.min(100,n*10)}%"></i></div><div style="margin-top:10px">${bsBtn(b)}</div></div>`}).join('');
+ $('#kbar').innerHTML=BR(['kegged']).map(b=>`<div class="chip" onclick="sm('${b.id}')">${b.stampQty?'<div class="bd">✔ พร้อมติดแสตมป์</div>':''}<b>${esc(b.beer)}</b><span>${esc(b.owner)}</span><small>บรรจุ ${fd(b.kegDate)} • ${esc(b.kegQty)} Kegs</small>${bsBtn(b)}</div>`).join('')||'<i style="color:#99a">ไม่มีรายการ</i>'}
 const cxNote=b=>b.cancel?`<p style="background:#5a1218;color:#ff7b7b;border:1px solid #ff4d4d;border-radius:10px;padding:8px 12px;font-weight:700">❌ ยกเลิกการต้ม — โดย ${esc(b.cancelBy||'-')} • ${fd(b.cancelDate)}</p>`:'';
 const cxBtn=b=>su()&&['prep','wait','queue','ferm'].includes(b.status)?(b.cancel?`<button class="s" onclick="cxAct('${b.id}',0)">↩ ยกเลิกการยกเลิก</button>`:`<button class="rd" onclick="cxAct('${b.id}',1)">❌ ยกเลิกการต้ม</button>`):'';
 function cxAct(id,v){if(!su())return;if(confirm(v?'ยืนยัน "ยกเลิกการต้ม" เบียร์นี้?\n• การ์ดจะหายจากช่องนี้ (ถ้าอยู่ใน Fermenter ถังจะว่าง)\n• ข้อมูลยังอยู่ แสดงสีแดง "ยกเลิก" ในตารางข้อมูล':'ต้องการยกเลิกสถานะ "ยกเลิกการต้ม" ใช่หรือไม่?'))act('cancelbrew',{id,v},v?'บันทึกการยกเลิกแล้ว':'ยกเลิกสถานะยกเลิกแล้ว')}
 function mvShow(id){const b=S.brews.find(x=>x.id==id),fr=[1,2,3,4,5,6,7,8].filter(i=>i!=b.tank&&!S.brews.find(x=>x.status=='ferm'&&!x.cancel&&x.tank==i));
  $('#mvbox').innerHTML=fr.length?`<div style="display:grid;grid-template-columns:1fr auto;gap:8px;align-items:end;margin-top:8px"><label>เลือกถังที่ว่าง<select id="mvt"><option value="">— เลือกถัง —</option>${fr.map(i=>`<option value="${i}">Fermenter ${i}</option>`).join('')}</select></label><button class="s" style="margin:0" onclick="mvTank('${id}')">ย้าย</button></div>`:'<p class="hint">ไม่มีถังว่าง</p>'}
 function mvTank(id){const n=$('#mvt').value;if(!n)return alert('เลือกถังที่ต้องการย้ายไป');const b=S.brews.find(x=>x.id==id);if(confirm('ย้าย "'+b.beer+'" จาก Fermenter '+b.tank+' ไป Fermenter '+n+' ใช่หรือไม่?')&&confirm('⚠ ยืนยันอีกครั้ง: ย้ายไป Fermenter '+n+' จริงๆ ใช่ไหม?'))act('brew',{d:{id,tank:n}},'ย้ายถังแล้ว ✔').then(ok=>ok&&cm())}
-function toTank(id,i){if(confirm('นำเบียร์นี้เข้า Fermenter '+i+' ?'))act('brew',{d:{id,status:'ferm',tank:String(i)}},'เข้า Fermenter แล้ว ✔')}
+function toTank(id,i){const b=S.brews.find(x=>x.id==id);if(!b)return;
+ M(`<h3>นำ "${esc(b.beer)}" เข้า Fermenter ${i}</h3><p class="hint">กรอกค่าเริ่มต้นก่อนอนุมัติ (บังคับ)</p><div class="r2"><label>OG *<input id="ogv" type="number" step="any" min="0" inputmode="decimal" placeholder="เช่น 12.5 หรือ 1.050"></label><label>pH *<input id="ogp" type="number" step="any" min="0" inputmode="decimal" placeholder="เช่น 5.3"></label></div><button class="d" onclick="okTank('${id}',${i})">✅ อนุมัติ นำเข้า Fermenter ${i}</button>`);setTimeout(()=>$('#ogv')&&$('#ogv').focus(),100)}
+async function okTank(id,i){const og=$('#ogv').value.trim(),ph=$('#ogp').value.trim();if(!(N(og)>0)||!(N(ph)>0))return alert('ต้องกรอกค่า OG และ pH (มากกว่า 0)');if(await act('brew',{d:{id,status:'ferm',tank:String(i),og,ogPh:ph,ogDate:today()}},'เข้า Fermenter แล้ว ✔'))cm()}
+const csvq=v=>'"'+String(v??'').replace(/"/g,'""')+'"';
+const bsBtn=b=>b&&FST[b.status]&&!b.cancel?`<button class="s sm bsb" onclick="event.stopPropagation();exFerm('${b.id}')">⬇ Brew sheet</button>`:'';
+const FST={ferm:'อยู่ใน Fermenter',kegged:'บรรจุแล้ว',stamped:'ติดแสตมป์แล้ว'};
+function fermData(id){return S.brews.filter(b=>!b.cancel&&b.id==id&&FST[b.status]).sort((a,b)=>(a.tankDate||a.brewDate||'')<(b.tankDate||b.brewDate||'')?-1:1).map(b=>{const ev=[],R=(d,t,v)=>ev.push([String(d||'').slice(0,10),t,v]);
+  R(b.tankDate||b.brewDate,'เข้า Fermenter','Fermenter '+(b.tank||'-'));
+  if(b.og)R(b.ogDate||b.tankDate||b.brewDate,'วัดค่า OG',b.og);if(b.ogPh)R(b.ogDate||b.tankDate||b.brewDate,'วัดค่า pH',b.ogPh);
+  J(b.logs,'[]').filter(l=>l.d&&l.t).sort((x,y)=>x.d<y.d?-1:x.d>y.d?1:0).forEach(l=>{
+   if(l.t=='FG and PH'){if(l.fg)R(l.d,'วัดค่า FG',l.fg);if(l.ph)R(l.d,'วัดค่า pH',l.ph)}
+   else if(l.t=='Temp (C)'){if(l.tp)R(l.d,'วัดอุณหภูมิ (°C)',l.tp)}
+   else if(l.t=='CO2'){if(l.mv)R(l.d,'วัดค่า CO2',l.mv)}
+   else if(l.t=='อื่นๆ'){if(l.it||l.mv)R(l.d,l.it||'อื่นๆ',l.mv||'')}
+   else R(l.d,l.t,l.ok?'ทำแล้ว':'ยังไม่ทำ')});
+  if(b.kegDate)R(b.kegDate,'บรรจุ (Keg)',(b.kegQty||'')+' ถัง'+(b.kegL?' ('+b.kegL+' ลิตร/ถัง)':''));
+  if(b.stampDate)R(b.stampDate,'ติดแสตมป์',(b.stampQty||'')+' ถัง'+(b.stampType?' • '+b.stampType:''));
+  return{b,ev}})}
+function pdfPages(pg,pw,ph){const E=new TextEncoder(),P=[],off=[];let n=0;const add=u=>{P.push(u);n+=u.length},S_=s=>add(E.encode(s)),obj=(i,s)=>{off[i]=n;S_(i+' 0 obj\n'+s+'\nendobj\n')},N_=pg.length;
+ S_('%PDF-1.4\n');obj(1,'<</Type/Catalog/Pages 2 0 R>>');obj(2,`<</Type/Pages/Kids[${pg.map((_,i)=>(3+i*3)+' 0 R').join(' ')}]/Count ${N_}>>`);
+ pg.forEach((q,i)=>{const a=3+i*3,cs=`q ${pw} 0 0 ${ph} 0 0 cm /Im0 Do Q`;obj(a,`<</Type/Page/Parent 2 0 R/MediaBox[0 0 ${pw} ${ph}]/Contents ${a+1} 0 R/Resources<</XObject<</Im0 ${a+2} 0 R>>>>>>`);obj(a+1,`<</Length ${cs.length}>>\nstream\n${cs}\nendstream`);
+  off[a+2]=n;S_(`${a+2} 0 obj\n<</Type/XObject/Subtype/Image/Width ${q.w}/Height ${q.h}/ColorSpace/DeviceRGB/BitsPerComponent 8/Filter/DCTDecode/Length ${q.u.length}>>\nstream\n`);add(q.u);S_('\nendstream\nendobj\n')});
+ const tot=3+N_*3,xo=n;S_(`xref\n0 ${tot}\n0000000000 65535 f \n`);for(let i=1;i<tot;i++)S_(String(off[i]).padStart(10,'0')+' 00000 n \n');S_(`trailer\n<</Size ${tot}/Root 1 0 R>>\nstartxref\n${xo}\n%%EOF`);
+ const o=new Uint8Array(n);let p=0;P.forEach(u=>{o.set(u,p);p+=u.length});return o}
+async function exFerm(id){const D=fermData(id);if(!D.length)return alert('ยังไม่มีข้อมูลให้ Export');busy(1);try{await fontOK();const logo=await loadImg('logo.png'),{b,ev}=D[0];
+ const W=794,H=1123,sc=2,pad=44,cv=[],FF='"TH Sarabun New","Sarabun",sans-serif';let c,x,y;
+ const FN=(s,w)=>x.font=(w?'bold ':'')+s+'px '+FF,T=(t,px,py,al,col)=>{x.textAlign=al||'left';x.fillStyle=col||'#1a1d29';x.fillText(String(t),px,py)},RR=(px,py,w,h,r,f)=>{x.fillStyle=f;x.beginPath();x.roundRect(px,py,w,h,r);x.fill()};
+ let wl=null;if(logo){const t=document.createElement('canvas');t.width=logo.width;t.height=logo.height;const g=t.getContext('2d');g.drawImage(logo,0,0);g.globalCompositeOperation='source-in';g.fillStyle='#fff';g.fillRect(0,0,t.width,t.height);wl=t}
+ const band=big=>{const h=big?104:56;x.fillStyle='#fff';x.fillRect(0,0,W,h);x.fillStyle='#f5a623';x.fillRect(0,h,W,4);
+  if(logo){const LH=big?68:40,LW=LH*logo.width/logo.height;x.drawImage(logo,pad,(h-LH)/2,LW,LH)}else{FN(big?28:18,1);T('BREWSPHERE',pad,h/2+8,'left','#111')}
+  if(big){FN(42,1);T('BREW SHEET',W-pad,46,'right','#111');FN(21,1);T('บันทึกการหมัก (Fermentation Log)',W-pad,72,'right','#8a5200');FN(17);T('ข้อมูล ณ '+fd(today())+' '+new Date().toTimeString().slice(0,5)+' น.   •   ดาวน์โหลดโดย '+(ME&&ME.name||'-'),W-pad,95,'right','#333')}else{FN(18,1);T('BREW SHEET  •  '+b.beer,W-pad,34,'right','#111')}return h+4};
+ const np=()=>{c=document.createElement('canvas');c.width=W*sc;c.height=H*sc;x=c.getContext('2d');x.scale(sc,sc);x.fillStyle='#fff';x.fillRect(0,0,W,H);cv.push(c);y=band(cv.length==1)+22};
+ np();y-=6;
+ // hero
+ FN(40,1);T(b.beer,pad,y+34);const stc={ferm:'#f5a623',kegged:'#7b2ff7',stamped:'#16c060'}[b.status]||'#888',stt=FST[b.status]||b.status;FN(17,1);const pw=x.measureText(stt).width+30;RR(W-pad-pw,y+8,pw,32,16,stc);T(stt,W-pad-pw/2,y+30,'center','#fff');
+ FN(21);T('Owner: '+b.owner+(b.tank?'   •   Fermenter '+b.tank:'')+'   •   วันต้ม '+fd(b.brewDate),pad,y+64,'left','#333');y+=80;
+ // stats
+ const L=J(b.logs,'[]').filter(l=>l.d&&l.t),lastOf=(t,k)=>{const a=L.filter(l=>l.t==t&&l[k]).sort((p,q)=>p.d<q.d?-1:p.d>q.d?1:0);return a.length?a[a.length-1][k]:'-'},t0=(b.tankDate||b.brewDate||'').slice(0,10),dys=t0?Math.max(0,Math.floor(((b.stampDate?new Date(b.stampDate.slice(0,10)):b.kegDate?new Date(b.kegDate.slice(0,10)):new Date(today()))-new Date(t0))/864e5)):'-';
+ const ST_=[['OG',b.og||'-','#f5a623'],['pH เริ่มต้น',b.ogPh||'-','#f5a623'],['FG ล่าสุด',lastOf('FG and PH','fg'),'#2aa9ff'],['Temp ล่าสุด °C',lastOf('Temp (C)','tp'),'#2aa9ff'],['วันที่อยู่ในถัง',dys,'#16c060'],['บรรจุ (Keg)',b.kegQty||'-','#7b2ff7'],['ติดแสตมป์ (ถัง)',b.stampQty&&b.stampDate?b.stampQty:'-','#e5384a'],['วันติดแสตมป์',b.stampDate?fd(b.stampDate):'-','#e5384a']],tw=(W-2*pad-3*12)/4;
+ ST_.forEach((s,i)=>{const px=pad+(i%4)*(tw+12),py=y+Math.floor(i/4)*70;RR(px,py,tw,62,12,'#f4f6fb');x.fillStyle=s[2];x.fillRect(px+12,py+12,4,38);FN(16);T(s[0],px+26,py+23,'left','#445');FN(i==7?20:26,1);T(s[1],px+26,py+51)});y+=70*2+8;
+ // charts
+ const ser=(t,k)=>L.filter(l=>l.t==t&&N(l[k])>0&&N(l[k])==N(l[k])).sort((p,q)=>p.d<q.d?-1:p.d>q.d?1:0).map(l=>[l.d,N(l[k])]);
+ const chart=(px,w,ttl,pts,col)=>{const h=128;RR(px,y,w,h,14,'#f8f9fc');FN(17,1);T(ttl,px+16,y+24);
+  if(pts.length<2){FN(16);T(pts.length?'มี 1 ค่า ('+pts[0][1]+') — ต้องมีอย่างน้อย 2 ค่าเพื่อแสดงกราฟ':'ยังไม่มีข้อมูล',px+w/2,y+h/2+10,'center','#99a');return}
+  const gx=px+44,gw=w-70,gy=y+42,gh=52,vs=pts.map(p=>p[1]),mn=Math.min(...vs),mx=Math.max(...vs),rg=(mx-mn)||1,d0=new Date(pts[0][0]),d1=new Date(pts[pts.length-1][0]),dr=(d1-d0)||1;
+  x.strokeStyle='#e1e4ee';x.lineWidth=1;[0,.5,1].forEach(f=>{x.beginPath();x.moveTo(gx,gy+gh*f);x.lineTo(gx+gw,gy+gh*f);x.stroke()});FN(13);T(mx,gx-6,gy+4,'right','#889');T(mn,gx-6,gy+gh+4,'right','#889');
+  const P=pts.map(p=>[gx+(new Date(p[0])-d0)/dr*gw,gy+gh-(p[1]-mn)/rg*gh]);x.strokeStyle=col;x.lineWidth=2.5;x.lineJoin='round';x.beginPath();P.forEach((q,i)=>i?x.lineTo(q[0],q[1]):x.moveTo(q[0],q[1]));x.stroke();x.lineWidth=1;
+  P.forEach(q=>{x.fillStyle='#fff';x.beginPath();x.arc(q[0],q[1],4.5,0,7);x.fill();x.strokeStyle=col;x.lineWidth=2;x.stroke();x.lineWidth=1});FN(13);T(fd(pts[0][0]).slice(0,5),gx,gy+gh+20,'left','#889');T(fd(pts[pts.length-1][0]).slice(0,5),gx+gw,gy+gh+20,'right','#889')};
+ const cw=(W-2*pad-14)/2;chart(pad,cw,'แนวโน้ม FG',ser('FG and PH','fg'),'#f5a623');chart(pad+cw+14,cw,'แนวโน้มอุณหภูมิ (°C)',ser('Temp (C)','tp'),'#2aa9ff');y+=128+18;
+ // timeline: วันเดียวกันอยู่แถวเดียวกัน คนละคอลัมน์
+ const day={},G=d=>{d=String(d||'').slice(0,10);return day[d]=day[d]||{og:'',ph:[],fg:'',tp:'',co2:'',tk:[],ev:[]}};
+ if(t0){const g=G(t0);g.ev.push(['เข้า Fermenter '+(b.tank||''),'#16c060'])}
+ if(b.og)G(b.ogDate||t0).og=b.og;if(b.ogPh)G(b.ogDate||t0).ph.push(b.ogPh);
+ L.forEach(l=>{const g=G(l.d);if(l.t=='FG and PH'){if(l.fg)g.fg=l.fg;if(l.ph)g.ph.push(l.ph)}else if(l.t=='Temp (C)'){if(l.tp)g.tp=l.tp}else if(l.t=='CO2'){if(l.mv)g.co2=l.mv}else if(l.t=='อื่นๆ'){if(l.it||l.mv)g.tk.push((l.it||'อื่นๆ')+(l.mv?' '+l.mv:''))}else g.tk.push(l.t+(l.ok?' ✓':' (ยังไม่ทำ)'))});
+ if(b.kegDate)G(b.kegDate).ev.push(['บรรจุ '+(b.kegQty||'')+' ถัง','#7b2ff7']);if(b.stampDate)G(b.stampDate).ev.push(['ติดแสตมป์ '+(b.stampQty||'')+' ถัง','#e5384a']);
+ const cols=[['วันที่',pad+10,'left'],['OG',pad+118,'center'],['pH',pad+176,'center'],['FG',pad+246,'center'],['Temp °C',pad+322,'center'],['CO2',pad+392,'center'],['งาน / เหตุการณ์',pad+440,'left']],fit=(t,w)=>{while(t.length>1&&x.measureText(t).width>w)t=t.slice(0,-1);return t},
+  th=()=>{FN(22,1);T('ตารางบันทึกการหมักรายวัน',pad,y+16);y+=30;RR(pad,y,W-2*pad,32,8,'#e9edf5');FN(16,1);cols.forEach(k=>T(k[0],k[1],y+22,k[2],'#111'));y+=36};th();
+ const DK=Object.keys(day).sort();let RH=Math.max(22,Math.min(34,Math.floor((H-50-126-y)/Math.max(1,DK.length))));const FS=RH<30?15:17;
+ DK.forEach((d,i)=>{if(y>H-60-(i==DK.length-1?126:0)){np();th();RH=34}const g=day[d];if(i%2)RR(pad,y,W-2*pad,RH,5,'#f5f7fb');
+  const bl=y+RH/2+5;FN(FS,1);T(fd(d),cols[0][1],bl,'left','#445');const V=(v,k,col)=>{FN(FS+1,1);T(v||'–',cols[k][1],bl,'center',v?(col||'#1a1d29'):'#c3c8d6')};
+  V(g.og,1,'#b87400');V(g.ph.join(' / '),2,'#b87400');V(g.fg,3,'#1b7fc4');V(g.tp,4,'#1b7fc4');V(g.co2,5);
+  let px=cols[6][1];g.ev.forEach(e=>{FN(FS-1,1);const t=fit(e[0],140),w=x.measureText(t).width+16,ph=Math.min(22,RH-6);RR(px,y+(RH-ph)/2,w,ph,ph/2,e[1]+'22');T(t,px+8,bl,'left',e[1]);px+=w+6});
+  if(g.tk.length){FN(FS-1);T(fit(g.tk.join(', '),W-pad-8-px),px,bl,'left','#334')}y+=RH});
+ if(y>H-150)np();y+=10;
+ const nm=(ME&&ME.name)||'-',stp=new Date(),pd=n=>String(n).padStart(2,'0'),stamp=fd(today())+' '+pd(stp.getHours())+':'+pd(stp.getMinutes())+':'+pd(stp.getSeconds())+' น.',did='BS-'+String(b.id).toUpperCase()+'-'+today().replace(/-/g,'')+pd(stp.getHours())+pd(stp.getMinutes());
+ RR(pad,y,W-2*pad,112,14,'#f4f7f4');x.strokeStyle='#16c060';x.lineWidth=2;x.beginPath();x.roundRect(pad,y,W-2*pad,112,14);x.stroke();x.lineWidth=1;x.fillStyle='#16c060';x.fillRect(pad,y+14,5,84);
+ FN(18,1);T('ลงนามอิเล็กทรอนิกส์ (Electronic Signature)',pad+22,y+30,'left','#127a3e');FN(36,1);x.font='italic bold 38px '+FF;T(nm,pad+22,y+76,'left','#10131c');x.strokeStyle='#999';x.beginPath();x.moveTo(pad+22,y+86);x.lineTo(pad+300,y+86);x.stroke();
+ FN(17);T('ยืนยันโดยผู้ใช้: '+nm+(ME&&ME.role=='super'?' (Super)':''),pad+22,y+106,'left','#333');
+ FN(17);T('วันที่/เวลา: '+stamp,W-pad-18,y+54,'right','#333');T('เลขที่เอกสาร: '+did,W-pad-18,y+80,'right','#333');FN(15);T('เอกสารนี้ลงนามด้วยบัญชีผู้ใช้ที่ล็อกอินในระบบ ณ เวลาที่ดาวน์โหลด',W-pad-18,y+106,'right','#667');y+=130;
+ cv.forEach((q,i)=>{const g=q.getContext('2d');g.font='15px '+FF;g.fillStyle='#99a';g.textAlign='left';g.fillText('Brewsphere • Brew Sheet • ลงนามโดย '+nm,pad,H-24);g.textAlign='right';g.fillText('หน้า '+(i+1)+'/'+cv.length,W-pad,H-24)});
+ const pg=[];for(const q of cv){const bl=await new Promise(r=>q.toBlob(r,'image/jpeg',.92));pg.push({u:new Uint8Array(await bl.arrayBuffer()),w:q.width,h:q.height})}
+ dlBlob(new Blob([pdfPages(pg,595,842)],{type:'application/pdf'}),'brewsheet_'+(b.beer||'beer').replace(/[^\w฀-๿-]+/g,'_')+'_'+today()+'.pdf')
+ }catch(e){alert('สร้างไฟล์ไม่สำเร็จ: '+e)}finally{busy(0)}}
 function bm(id){const b=S.brews.find(x=>x.id==id),w=b.status=='wait'||b.status=='prep',miss=reqMiss(b).length>0,ed=['prep','wait','queue'].includes(b.status);
  M(`<h3>${esc(b.beer)} <small>(${esc(b.owner)})</small></h3>${cxNote(b)}<p>ราคารวม ฿${B(bt(b))}</p>${miss&&ed?`<div style="background:#3a1a00;border:2px solid #ff9a1f;border-radius:12px;padding:12px;margin:8px 0"><p style="color:#ffb347;font-weight:700;margin:0 0 8px">⚠ ใส่ข้อมูลที่บังคับให้ครบ ก่อนเลือกวันที่</p><button class="nbtn" style="width:100%;margin:0" onclick="nb('${id}')">✏️ แก้ไขข้อมูลเบียร์</button></div>`:''}<div id="bmf">${f('brewDate','ยืนยันวันที่ต้ม (BREW DATE)','','date',b.brewDate)}</div>
  <button class="d" ${miss?'disabled style="opacity:.35;cursor:not-allowed"':''} onclick="saveBm('${id}',${w})">${w?'✅ ยืนยันวันต้ม → เข้าคิวต้ม':'💾 บันทึกวันที่'}</button>${su()?`<button class="rd" onclick="delIt('b','${id}')">🗑 ลบ</button>`:''}${cxBtn(b)}${!miss&&ed?`<div style="text-align:right;margin-top:10px"><button class="s sm" style="opacity:.65" onclick="nb('${id}')">✏️ แก้ไขข้อมูลเบียร์</button></div>`:''}`);
@@ -259,7 +331,7 @@ function lc(){const n=gl().filter(rec).length;$('#lc').textContent=`บันท
 function fm(id){const b=S.brews.find(x=>x.id==id),L=J(b.logs);
  M(`<h3>Fermenter ${b.tank}: ${esc(b.beer)} <small>(${esc(b.owner)})</small></h3>${cxNote(b)}
  <div id="lg" oninput="lc()">${[...Array(10)].map((_,i)=>lrow(L[i]||{},i)).join('')}</div><label>จำนวน Kegs ที่บรรจุได้ (กรอกก่อนส่งบรรจุ)<input id="kq" type="number" value="${esc(b.kegQty)}"></label><p id="lc" style="color:var(--a)"></p>
- ${ebtn(b)}<button class="d" onclick="saveF('${id}',0)">💾 บันทึก</button><button id="kb" onclick="saveF('${id}',1)">🛢️ ส่งไปบรรจุ (Kegging)</button>${cxBtn(b)}<div style="margin-top:14px;text-align:right"><button class="s sm" style="opacity:.8" onclick="mvShow('${id}')">↔ ย้ายถัง</button></div><div id="mvbox"></div>`);lc()}
+ ${ebtn(b)}<button class="d" onclick="saveF('${id}',0)">💾 บันทึก</button><button id="kb" onclick="saveF('${id}',1)">🛢️ ส่งไปบรรจุ (Kegging)</button>${cxBtn(b)}<div style="margin-top:14px;text-align:right"><button class="s sm" onclick="exFerm('${id}')">⬇ Brew sheet (PDF)</button> <button class="s sm" style="opacity:.8" onclick="mvShow('${id}')">↔ ย้ายถัง</button></div><div id="mvbox"></div>`);lc()}
 function saveF(id,k){if(k&&S.brews.find(x=>x.id==id)?.cancel)return alert('เบียร์นี้ถูกยกเลิกการต้ม ส่งไปบรรจุไม่ได้ (Super ต้องยกเลิกสถานะยกเลิกก่อน)');const L=gl(),bad=L.find(l=>(l.t=='FG and PH'&&(l.fg||l.ph)&&!(v(l.fg,1,7)&&v(l.ph,2,7)))||(l.t=='Temp (C)'&&l.tp&&!v(l.tp,0,30)));
  if(bad)return alert('ค่าไม่อยู่ในช่วง: FG 1.000-1.090 หรือ 1-7, pH 2-7, Temp 0-30');
  const d={id,logs:L,kegQty:$('#kq').value};if(k){if(!d.kegQty)return alert('ใส่จำนวน Kegs ที่บรรจุได้');d.status='kegged'}
@@ -350,7 +422,7 @@ async function slip(id,kind){busy(1);try{const c=await slipCanvas(id),b=S.brews.
 /* ===== WAREHOUSE ===== */
 const ST=()=>BR(['stamped']),Q=(b,tp,w)=>N(b[(tp=='N'?'ns':'wh')+w]);
 function rWh(){const keep={};document.querySelectorAll('#st [id^=tf],#st [id^=tp]').forEach(e=>keep[e.id]=e.value);
- $('#st').innerHTML='<tr><th>เบียร์</th><th>Owner</th><th>วันที่บรรจุ</th><th>แสตมป์<br>BS</th><th>แสตมป์<br>UHI</th><th>ไม่แสตมป์<br>BS</th><th>ไม่แสตมป์<br>UHI</th><th>โยกคลัง</th></tr>'+ST().map(b=>`<tr><td class="c1">${esc(b.beer)}</td><td data-l="Owner">${esc(b.owner)}</td><td data-l="วันที่บรรจุ">${fd(b.kegDate)}</td><td data-l="แสตมป์ BS"><b>${Q(b,'S','B')}</b></td><td data-l="แสตมป์ UHI"><b>${Q(b,'S','U')}</b></td><td data-l="ไม่แสตมป์ BS">${Q(b,'N','B')}</td><td data-l="ไม่แสตมป์ UHI">${Q(b,'N','U')}</td>
+ $('#st').innerHTML='<tr><th>เบียร์</th><th>Owner</th><th>วันที่บรรจุ</th><th>แสตมป์<br>BS</th><th>แสตมป์<br>UHI</th><th>ไม่แสตมป์<br>BS</th><th>ไม่แสตมป์<br>UHI</th><th>โยกคลัง</th></tr>'+ST().map(b=>`<tr><td class="c1">${esc(b.beer)}<br>${bsBtn(b)}</td><td data-l="Owner">${esc(b.owner)}</td><td data-l="วันที่บรรจุ">${fd(b.kegDate)}</td><td data-l="แสตมป์ BS"><b>${Q(b,'S','B')}</b></td><td data-l="แสตมป์ UHI"><b>${Q(b,'S','U')}</b></td><td data-l="ไม่แสตมป์ BS">${Q(b,'N','B')}</td><td data-l="ไม่แสตมป์ UHI">${Q(b,'N','U')}</td>
  <td class="tr" data-l="โยกคลัง"><select id="tp${b.id}" style="width:auto"><option value="S">แสตมป์</option><option value="N">ไม่แสตมป์</option></select><input id="tf${b.id}" type="number" placeholder="Kegs" style="width:70px"><button class="s" onclick="tr('${b.id}','B','U')">→UHI</button><button class="s" onclick="tr('${b.id}','U','B')">→BS</button></td></tr>`).join('')||'<tr><td colspan="8">ยังไม่มีสินค้า (เกิดเมื่อติดแสตมป์เสร็จ)</td></tr>';
  Object.entries(keep).forEach(([k,x])=>{const e=document.getElementById(k);if(e)e.value=x});
  document.querySelectorAll('.ob').forEach(s=>{const x=s.value;s.innerHTML='<option value="">— เลือกเบียร์ (แสตมป์/ไม่แสตมป์) —</option>'+ST().map(b=>`<option value="${b.id}">${esc(b.beer)} (${esc(b.owner)}) — BS ${Q(b,'S','B')}/${Q(b,'N','B')} · UHI ${Q(b,'S','U')}/${Q(b,'N','U')}</option>`).join('');s.value=x});
@@ -441,7 +513,7 @@ const SUMS=[['sm_m','สรุปยอดผลิตสะสมรายเ�
 const sumHtml=()=>SUMS.map(([id,t,kf])=>`<div class="ch" style="margin-top:14px"><h4 style="margin:0">${t}</h4>${xb(id)}</div><div class="sc">${tb(SH,sumR(kf),1)}</div>`).join('');
 function pieD(){const per=$('#pp').value,o={},x={},xs={};BR(['kegged','stamped']).filter(b=>pk(b).startsWith(per)).forEach(b=>{o[b.owner]=(o[b.owner]||0)+N(b.kegQty);const k=b.stampType||'ยังไม่ติดแสตมป์';x[k]=(x[k]||0)+N(b.exTax);xs[k]=(xs[k]||0)+N(b.stampQty)});return{per:per||'ทั้งหมด',o:Object.entries(o),x:Object.entries(x),xs}}
 function rList(){const ks=[...new Set(BR(['kegged','stamped']).map(pk).filter(Boolean))],per=[...new Set([...ks.map(k=>k.slice(0,4)),...ks.map(k=>k.slice(0,7))])].sort().reverse(),cur=$('#pp').value;
- $('#pl').innerHTML='<tr>'+PH.map(h=>`<th>${h}</th>`).join('')+'<th>เอกสารแสตมป์</th></tr>'+PL().map(b=>'<tr>'+PR(b).map(x=>`<td${/ยกเลิก/.test(x)?' class="cxt"':''}>${esc(x)}</td>`).join('')+`<td style="white-space:nowrap">${ebtn(b).replace('class="s"','class="s sm"').replace('✏️ แก้ไขข้อมูลเบียร์','✏️ แก้ไข')} ${b.stampDate&&N(b.stampQty)>0?`<button class="d sm" onclick="sdoc('${b.stampDate}','doc')">⬇ .doc</button> <button class="s sm" onclick="sdoc('${b.stampDate}','pdf')">⬇ .pdf</button>`:''}</td></tr>`).join('');
+ $('#pl').innerHTML='<tr>'+PH.map(h=>`<th>${h}</th>`).join('')+'<th>เอกสารแสตมป์</th></tr>'+PL().map(b=>'<tr>'+PR(b).map(x=>`<td${/ยกเลิก/.test(x)?' class="cxt"':''}>${esc(x)}</td>`).join('')+`<td style="white-space:nowrap">${ebtn(b).replace('class="s"','class="s sm"').replace('✏️ แก้ไขข้อมูลเบียร์','✏️ แก้ไข')} ${bsBtn(b)} ${b.stampDate&&N(b.stampQty)>0?`<button class="d sm" onclick="sdoc('${b.stampDate}','doc')">⬇ .doc</button> <button class="s sm" onclick="sdoc('${b.stampDate}','pdf')">⬇ .pdf</button>`:''}</td></tr>`).join('');
  $('#pp').innerHTML='<option value="">ทั้งหมด</option>'+per.map(p=>`<option>${p}</option>`).join('');$('#pp').value=cur;
  $('#sumt').innerHTML=sumHtml();$('#pfb').innerHTML=pfbT();const d=pieD();$('#pie1').innerHTML=pie(d.o);$('#pie2').innerHTML=pie(d.x);$('#pie4').innerHTML=pie(Object.entries(d.xs))}
 
