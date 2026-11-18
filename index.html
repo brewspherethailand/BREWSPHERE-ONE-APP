@@ -267,8 +267,8 @@ function pdfPages(pg,pw,ph){const E=new TextEncoder(),P=[],off=[];let n=0;const 
  const tot=3+N_*3,xo=n;S_(`xref\n0 ${tot}\n0000000000 65535 f \n`);for(let i=1;i<tot;i++)S_(String(off[i]).padStart(10,'0')+' 00000 n \n');S_(`trailer\n<</Size ${tot}/Root 1 0 R>>\nstartxref\n${xo}\n%%EOF`);
  const o=new Uint8Array(n);let p=0;P.forEach(u=>{o.set(u,p);p+=u.length});return o}
 async function exFerm(id){const D=fermData(id);if(!D.length)return alert('ยังไม่มีข้อมูลให้ Export');busy(1);try{await fontOK();const logo=await loadImg('logo.png'),{b,ev}=D[0];
- const W=794,H=1123,sc=2,pad=44,cv=[],FF='"TH Sarabun New","Sarabun",sans-serif';let c,x,y;
- const FN=(s,w)=>x.font=(w?'bold ':'')+s+'px '+FF,T=(t,px,py,al,col)=>{x.textAlign=al||'left';x.fillStyle=col||'#1a1d29';x.fillText(String(t),px,py)},RR=(px,py,w,h,r,f)=>{x.fillStyle=f;x.beginPath();x.roundRect(px,py,w,h,r);x.fill()};
+ const W=794,H=1123,sc=2,pad=44,SH=112,cv=[],FF='"TH Sarabun New","Sarabun",sans-serif';let c,x,y;
+ const FN=(s,w)=>x.font=(w?'bold ':'')+s+'px '+FF,T=(t,px,py,al,col)=>{t=String(t);x.textAlign='left';x.fillStyle=col||'#1a1d29';if(al=='right')px-=x.measureText(t).width;else if(al=='center')px-=x.measureText(t).width/2;x.fillText(t,px,py)},RR=(px,py,w,h,r,f)=>{x.fillStyle=f;x.beginPath();x.roundRect(px,py,w,h,r);x.fill()};
  let wl=null;if(logo){const t=document.createElement('canvas');t.width=logo.width;t.height=logo.height;const g=t.getContext('2d');g.drawImage(logo,0,0);g.globalCompositeOperation='source-in';g.fillStyle='#fff';g.fillRect(0,0,t.width,t.height);wl=t}
  const band=big=>{const h=big?104:56;x.fillStyle='#fff';x.fillRect(0,0,W,h);x.fillStyle='#f5a623';x.fillRect(0,h,W,4);
   if(logo){const LH=big?68:40,LW=LH*logo.width/logo.height;x.drawImage(logo,pad,(h-LH)/2,LW,LH)}else{FN(big?28:18,1);T('BREWSPHERE',pad,h/2+8,'left','#111')}
@@ -299,19 +299,18 @@ async function exFerm(id){const D=fermData(id);if(!D.length)return alert('ยั
  if(b.kegDate)G(b.kegDate).ev.push(['บรรจุ '+(b.kegQty||'')+' ถัง','#7b2ff7']);if(b.stampDate)G(b.stampDate).ev.push(['ติดแสตมป์ '+(b.stampQty||'')+' ถัง','#e5384a']);
  const cols=[['วันที่',pad+10,'left'],['OG',pad+118,'center'],['pH',pad+176,'center'],['FG',pad+246,'center'],['Temp °C',pad+322,'center'],['CO2',pad+392,'center'],['งาน / เหตุการณ์',pad+440,'left']],fit=(t,w)=>{while(t.length>1&&x.measureText(t).width>w)t=t.slice(0,-1);return t},
   th=()=>{FN(22,1);T('ตารางบันทึกการหมักรายวัน',pad,y+16);y+=30;RR(pad,y,W-2*pad,32,8,'#e9edf5');FN(16,1);cols.forEach(k=>T(k[0],k[1],y+22,k[2],'#111'));y+=36};th();
- const DK=Object.keys(day).sort();let RH=Math.max(22,Math.min(34,Math.floor((H-50-126-y)/Math.max(1,DK.length))));const FS=RH<30?15:17;
- DK.forEach((d,i)=>{if(y>H-60-(i==DK.length-1?126:0)){np();th();RH=34}const g=day[d];if(i%2)RR(pad,y,W-2*pad,RH,5,'#f5f7fb');
+ const DK=Object.keys(day).sort();let RH=Math.max(22,Math.min(34,Math.floor((H-50-SH-14-y)/Math.max(1,DK.length))));const FS=RH<30?15:17;
+ DK.forEach((d,i)=>{if(y>H-60-(i==DK.length-1?SH+14:0)){np();th();RH=34}const g=day[d];if(i%2)RR(pad,y,W-2*pad,RH,5,'#f5f7fb');
   const bl=y+RH/2+5;FN(FS,1);T(fd(d),cols[0][1],bl,'left','#445');const V=(v,k,col)=>{FN(FS+1,1);T(v||'–',cols[k][1],bl,'center',v?(col||'#1a1d29'):'#c3c8d6')};
   V(g.og,1,'#b87400');V(g.ph.join(' / '),2,'#b87400');V(g.fg,3,'#1b7fc4');V(g.tp,4,'#1b7fc4');V(g.co2,5);
   let px=cols[6][1];g.ev.forEach(e=>{FN(FS-1,1);const t=fit(e[0],140),w=x.measureText(t).width+16,ph=Math.min(22,RH-6);RR(px,y+(RH-ph)/2,w,ph,ph/2,e[1]+'22');T(t,px+8,bl,'left',e[1]);px+=w+6});
   if(g.tk.length){FN(FS-1);T(fit(g.tk.join(', '),W-pad-8-px),px,bl,'left','#334')}y+=RH});
- if(y>H-150)np();y+=10;
- const nm=(ME&&ME.name)||'-',stp=new Date(),pd=n=>String(n).padStart(2,'0'),stamp=fd(today())+' '+pd(stp.getHours())+':'+pd(stp.getMinutes())+':'+pd(stp.getSeconds())+' น.',did='BS-'+String(b.id).toUpperCase()+'-'+today().replace(/-/g,'')+pd(stp.getHours())+pd(stp.getMinutes());
- RR(pad,y,W-2*pad,112,14,'#f4f7f4');x.strokeStyle='#16c060';x.lineWidth=2;x.beginPath();x.roundRect(pad,y,W-2*pad,112,14);x.stroke();x.lineWidth=1;x.fillStyle='#16c060';x.fillRect(pad,y+14,5,84);
- FN(18,1);T('ลงนามอิเล็กทรอนิกส์ (Electronic Signature)',pad+22,y+30,'left','#127a3e');FN(36,1);x.font='italic bold 38px '+FF;T(nm,pad+22,y+76,'left','#10131c');x.strokeStyle='#999';x.beginPath();x.moveTo(pad+22,y+86);x.lineTo(pad+300,y+86);x.stroke();
- FN(17);T('ยืนยันโดยผู้ใช้: '+nm+(ME&&ME.role=='super'?' (Super)':''),pad+22,y+106,'left','#333');
- FN(17);T('วันที่/เวลา: '+stamp,W-pad-18,y+54,'right','#333');T('เลขที่เอกสาร: '+did,W-pad-18,y+80,'right','#333');FN(15);T('เอกสารนี้ลงนามด้วยบัญชีผู้ใช้ที่ล็อกอินในระบบ ณ เวลาที่ดาวน์โหลด',W-pad-18,y+106,'right','#667');y+=130;
- cv.forEach((q,i)=>{const g=q.getContext('2d');g.font='15px '+FF;g.fillStyle='#99a';g.textAlign='left';g.fillText('Brewsphere • Brew Sheet • ลงนามโดย '+nm,pad,H-24);g.textAlign='right';g.fillText('หน้า '+(i+1)+'/'+cv.length,W-pad,H-24)});
+ if(y>H-46-SH-12)np();
+  const nm=(ME&&ME.name)||'-',stp=new Date(),pd=n=>String(n).padStart(2,'0'),stamp=fd(today())+' '+pd(stp.getHours())+':'+pd(stp.getMinutes())+':'+pd(stp.getSeconds())+' น.',did='BS-'+String(b.id).toUpperCase()+'-'+today().replace(/-/g,'')+pd(stp.getHours())+pd(stp.getMinutes());
+  y=H-46-SH;RR(pad,y,W-2*pad,SH,14,'#f4f7f4');x.strokeStyle='#16c060';x.lineWidth=2;x.beginPath();x.roundRect(pad,y,W-2*pad,SH,14);x.stroke();x.lineWidth=1;x.fillStyle='#16c060';x.fillRect(pad,y+12,5,SH-24);
+  FN(17,1);T('ลงนามอิเล็กทรอนิกส์ (Electronic Signature)',pad+22,y+28,'left','#127a3e');x.font='italic bold 32px '+FF;T(nm,pad+22,y+64,'left','#10131c');x.strokeStyle='#999';x.beginPath();x.moveTo(pad+22,y+72);x.lineTo(pad+300,y+72);x.stroke();
+  FN(16);T('ยืนยันโดยผู้ใช้: '+nm+(ME&&ME.role=='super'?' (Super)':'')+'   •   '+stamp,pad+22,y+92,'left','#222');FN(14);T('เลขที่เอกสาร: '+did,pad+22,y+108,'left','#667');
+ cv.forEach((q,i)=>{const g=q.getContext('2d');g.font='15px '+FF;g.fillStyle='#99a';g.textAlign='left';g.fillText('Brewsphere • Brew Sheet • ลงนามโดย '+nm,pad,H-24);g.textAlign='left';{const tx='หน้า '+(i+1)+'/'+cv.length;g.fillText(tx,W-pad-g.measureText(tx).width,H-24)}});
  const pg=[];for(const q of cv){const bl=await new Promise(r=>q.toBlob(r,'image/jpeg',.92));pg.push({u:new Uint8Array(await bl.arrayBuffer()),w:q.width,h:q.height})}
  dlBlob(new Blob([pdfPages(pg,595,842)],{type:'application/pdf'}),'brewsheet_'+(b.beer||'beer').replace(/[^\w฀-๿-]+/g,'_')+'_'+today()+'.pdf')
  }catch(e){alert('สร้างไฟล์ไม่สำเร็จ: '+e)}finally{busy(0)}}
