@@ -187,7 +187,7 @@ h3{font-size:19px}
 <script>
 const API='https://script.google.com/macros/s/AKfycbzAd5Dcb-4DWiPoMwoAgRXeQNjiSi09PpQsOMQzFXtqo2LUtT25rV3l0WivHkCRSP9K/exec';
 const TASKS=['Dry Hops','Drain Yeast','Temp (C)','FG and PH','CO2','อื่นๆ'];
-const STAMPS=['BREWSPHERE LAGER','BREWSPHERE IPA','BREWSPHERE DARK LAGER','BREWSPHERE YUZU','JUNIPER WHEAT BEER','BREWSPHERE PALE ALE','Kingpin Plis','Minho By Alone'];
+const STAMPS=['BREWSPHERE LAGER','BREWSPHERE IPA','BREWSPHERE DARK LAGER','BREWSPHERE YUZU','JUNIPER WHEAT BEER','BREWSPHERE PALE ALE','Kingpin Plis','Minho By Alone','LUKY DAKY','NEWMOON','BREWSPHERE DUNKEL WEISSBIER'];
 const PG=[['prep','Prepare for Brew'],['fer','ผลิต / Fermenter'],['wh','คลังสินค้า'],['list','รายการที่ผลิตทั้งหมด'],['acct','บัญชีเบิกทดรองจ่าย'],['xs','สรรพสามิต']];
 const SECS=[['malt','Malt'],['hop','Hops'],['yeast','Yeast'],['other','อื่นๆ']];
 const AF={scb:[['date','วันที่','','date'],['company','ชื่อบริษัท','company'],['docNo','เลขที่ใบเสร็จ/ใบกำกับภาษี'],['docDate','วันที่ในใบเสร็จ/ใบกำกับภาษี','','date'],['paid','จำนวนเงินจ่าย','','number'],['recv','จำนวนเงินรับ','','number']],
@@ -381,7 +381,7 @@ function delR(b){const r=b.parentNode,v=[...r.querySelectorAll('input,select')].
 function nsel(s){const i=s.parentNode.querySelector('.n');if(s.value=='__new'){i.style.display='';i.value='';i.focus()}else{i.style.display='none';i.value=s.value}}
 function nsync(r){const s=r.querySelector('.ns'),i=r.querySelector('.n');if(!s||!i.value)return;s.innerHTML=nopt(r.dataset.c,i.value);s.value=i.value}
 function addR(c){$('#sec-'+c).insertAdjacentHTML('beforeend',rowH(c))}
-const stList=()=>[...new Set(S.opts.filter(o=>o.cat=='stamp').map(o=>o.val))].sort((x,y)=>x.localeCompare(y));
+const stList=()=>[...new Set(STAMPS.concat(S.opts.filter(o=>o.cat=='stamp').map(o=>o.val)))].sort((x,y)=>x.localeCompare(y));
 const stOpt=cur=>{const a=[...new Set(stList().concat(cur?[cur]:[]))];return '<option value="">— เลือกชนิดแสตมป์ —</option>'+a.map(v=>`<option value="${esc(v)}"${v==cur?' selected':''}>${esc(v)}</option>`).join('')+'<option value="__oth">➕ อื่นๆ (ระบุชนิดและราคา)</option>'};
 function stInit(cur){const sel=$('#stsel');if(sel)sel.value=cur||''}
 function stSel(){const v=$('#stsel').value,o=v=='__oth';$('#stoth').style.display=o?'':'none';$('#bf [data-k=taxType]').value=o?($('#stn').value.trim()):v;txu(0)}
@@ -587,12 +587,13 @@ function rList(){const ks=[...new Set(BR(['kegged','stamped']).map(pk).filter(Bo
 
 
 /* ===== เอกสารขอติดแสตมป์ (ฟอนต์ TH Sarabun New 16) ===== */
-const CO={name:'บริษัท บริวสเฟียร์ จำกัด',reg:'01355670053681001',no:'70/658',moo:'3',soi:'-',sub:'คลองหนึ่ง',dist:'คลองหลวง',prov:'กรุงเทพมหานคร',office:'สำนักงานสรรพสามิตพื้นที่ปทุมธานี 2',boss:'สรรพสามิตพื้นที่ปทุมธานี 2',signer:'พิชญ์พล วราภรณ์นิลอุบล'};
+const CO={name:'บริษัท บริวสเฟียร์ จำกัด',reg:'01355670053681001',no:'70/658',moo:'3',soi:'-',sub:'คลองหนึ่ง',dist:'คลองหลวง',prov:'ปทุมธานี',office:'สำนักงานสรรพสามิตพื้นที่ปทุมธานี 2',boss:'สรรพสามิตพื้นที่ปทุมธานี 2',signer:'พิชญ์พล วราภรณ์นิลอุบล'};
 const THM=['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
 const thp=s=>{const[y,m,d]=s.split('-');return{d:+d,m:THM[m-1],y:+y+543}};
 const SDB=()=>BR(['kegged','stamped']).filter(b=>b.stampDate&&N(b.stampQty)>0);
+const sdEx=b=>{const st=xst(b),rr=xRes(st),n=rr.c?(XP.find(x=>x[0]==rr.c)||[])[1]:'';return n?{t:xpn(rr.c).replace(/\s+\d+(\.\d+)?\s*$/,'').trim(),abv:xabv(n)}:{t:b.stampType||b.taxType,abv:''}};   // ชื่อสุราในเอกสารติดแสตมป์ = ชื่อสินค้าในระบบสรรพสามิต
 function sdGroups(){const m={};SDB().forEach(b=>{(m[b.stampDate]=m[b.stampDate]||[]).push(b)});
- return Object.keys(m).sort().reverse().map(d=>{const rows={};m[d].forEach(b=>{const t=b.stampType||b.taxType,k=[t,b.abv||'',b.kegL||20,b.stampCode||'H1'].join('|'),r=rows[k]=rows[k]||{t,abv:b.abv||'',l:b.kegL||20,c:b.stampCode||'H1',q:0};r.q+=N(b.stampQty)});
+ return Object.keys(m).sort().reverse().map(d=>{const rows={};m[d].forEach(b=>{const ex=sdEx(b),t=ex.t,ab=ex.abv||b.abv||'',k=[t,ab,b.kegL||20,'H1'].join('|'),r=rows[k]=rows[k]||{t,abv:ab,l:b.kegL||20,c:'H1',q:0};r.q+=N(b.stampQty)});
   const L=Object.values(rows);return{d,rows:L,tot:L.reduce((a,r)=>a+r.q,0),done:m[d].every(b=>b.status=='stamped')}})}
 const SDCSS=`@page let{size:612pt 792pt;margin:0}@page rec{size:595.28pt 841.89pt;margin:0}*{box-sizing:border-box}html,body{margin:0;padding:0;background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact}body{font-family:'TH Sarabun New','THSarabunNew','Sarabun',sans-serif;color:#000}
 .pg{position:relative;overflow:hidden;page-break-after:always;break-after:page;background:#fff}.pg:last-child{page-break-after:auto;break-after:auto}.pg.L{page:let;width:612pt;height:792pt;font-size:16.1pt}.pg.R{page:rec;width:595.28pt;height:841.89pt;font-size:15.25pt}
@@ -755,8 +756,10 @@ const xpc=c=>(XP.find(x=>x[0]==c)||[])[2]||'';   // รหัสสินค้�
 
 const xtok=s=>new Set((s.toLowerCase().match(/[a-z]+/g)||[]).filter(w=>!['g','by'].includes(w)));
 const xabv=n=>{const m=n.match(/(\d+\.\d+)\s*ดีกรี/);return m?+m[1]:0};
-function xauto(beer,abv){const a=xtok(beer);if(!a.size)return{c:'',amb:1};const sc=XP.map(([c,n])=>{const b=xtok(n);let i=0;a.forEach(w=>{if(b.has(w))i++});const u=a.size+b.size-i;return{c,s:i/u+(abv&&Math.abs(xabv(n)-N(abv))<.05?.05:0),n}}).sort((x,y)=>y.s-x.s);
- return sc[0].s<.5?{c:'',amb:1}:{c:sc[0].c,amb:sc[1].s===sc[0].s}}
+const XAL=[['haplab','BLACK JACK'],['bock','ROGBOK']];   // ชื่อเรียกอื่น → ชื่อสินค้าในระบบสรรพสามิต
+function xauto(beer,abv){const al=XAL.find(([k])=>String(beer).toLowerCase().replace(/[^a-z]+/g,' ').trim()==k);if(al)beer=al[1];const a=xtok(beer);if(!a.size)return{c:'',amb:1};const sc=XP.map(([c,n])=>{const b=xtok(n);let i=0;a.forEach(w=>{if(b.has(w))i++});const u=a.size+b.size-i;return{c,s:i/u+(abv&&Math.abs(xabv(n)-N(abv))<.05?.05:0),n}}).sort((x,y)=>y.s-x.s);
+ if(sc[0].s<.5)return{c:'',amb:1};const ti=sc.filter(x=>x.s===sc[0].s);if(ti.length>1){const en=ti.filter(x=>!/[\u0E00-\u0E7F]/.test(xpn(x.c)));if(en.length==1)return{c:en[0].c,amb:0}}   // ชื่อซ้ำกัน: เลือกรายการที่เป็นชื่ออังกฤษล้วน
+ return{c:sc[0].c,amb:sc[1].s===sc[0].s}}
 /* ---- ข้อมูลที่ผู้ใช้กรอก เก็บในชีต Options (ค่าล่าสุดชนะ) ---- */
 const xo=(cat,kf)=>{const m={};(S.opts||[]).forEach(o=>{if(o.cat===cat){const a=o.val.split('\t');m[kf(a)]=a}});return m};
 const xsave=(cat,a,msg)=>act('xmap',{opts:[[cat,a.map(x=>String(x??'').replace(/\t/g,' ')).join('\t')+'\t'+Date.now()]]},msg||'บันทึกแล้ว ✔');
